@@ -35,8 +35,6 @@ public class WhistView implements IView {
             new Location(625, 350)
     };
 
-
-
     private final Location textLocation = new Location(350, 450);
     private Whist model;
 

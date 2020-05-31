@@ -16,8 +16,7 @@ public class Trick implements ISubject {
     private List<IObserver> observers;
 
     public Trick() {
-        // TODO: Use a factory or singleton to build Deck
-        this.cards = new Hand(new Deck(Whist.Suit.values(), Whist.Rank.values(), "cover"));
+        this.cards = new Hand(DeckFactory.getInstance().createStandardDeck());
         this.observers = new ArrayList<>();
     }
 
@@ -25,7 +24,7 @@ public class Trick implements ISubject {
         return this.cards;
     }
 
-    public void addToTrick(Card selected) {
+    public void transfer(Card selected) {
         selected.transfer(this.cards, true);
         changed = true;
         notifyObservers();
