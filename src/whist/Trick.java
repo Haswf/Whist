@@ -1,23 +1,21 @@
 package whist;
 
 import ch.aplu.jcardgame.Card;
-import ch.aplu.jcardgame.Deck;
 import ch.aplu.jcardgame.Hand;
 import whist.interfaces.IObserver;
-import whist.interfaces.ISubject;
+import whist.interfaces.IObservable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Trick implements ISubject {
+public class Trick implements IObservable {
     public boolean isHidden = false;
     public final Hand cards;
     private boolean changed;
     private List<IObserver> observers;
 
     public Trick() {
-        // TODO: Use a factory or singleton to build Deck
-        this.cards = new Hand(new Deck(Whist.Suit.values(), Whist.Rank.values(), "cover"));
+        this.cards = new Hand(DeckFactory.getInstance().createStandardDeck());
         this.observers = new ArrayList<>();
     }
 
@@ -25,7 +23,7 @@ public class Trick implements ISubject {
         return this.cards;
     }
 
-    public void addToTrick(Card selected) {
+    public void transfer(Card selected) {
         selected.transfer(this.cards, true);
         changed = true;
         notifyObservers();

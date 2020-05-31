@@ -1,20 +1,15 @@
 package whist.view;
 
-import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
 import ch.aplu.jcardgame.RowLayout;
 import ch.aplu.jcardgame.TargetArea;
 import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.Location;
 import whist.interfaces.IController;
-import whist.interfaces.IObserver;
-import whist.interfaces.ISubject;
 import whist.interfaces.IView;
 import whist.Whist;
 
-import java.awt.*;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,8 +29,6 @@ public class WhistView implements IView {
             new Location(350, 75),
             new Location(625, 350)
     };
-
-
 
     private final Location textLocation = new Location(350, 450);
     private Whist model;

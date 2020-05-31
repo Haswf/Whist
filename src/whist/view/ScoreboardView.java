@@ -1,22 +1,22 @@
-package whist;
+package whist.view;
 
-import ch.aplu.jcardgame.Hand;
-import ch.aplu.jcardgame.TargetArea;
 import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.Location;
 import ch.aplu.jgamegrid.TextActor;
+import whist.FontSingleton;
+import whist.Scoreboard;
+import whist.Whist;
 import whist.interfaces.IController;
 import whist.interfaces.IObserver;
-import whist.interfaces.ISubject;
+import whist.interfaces.IObservable;
 import whist.interfaces.IView;
-import whist.view.WhistView;
 
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ScoreboardView implements IView, IObserver {
-    private ISubject topic;
+    private IObservable topic;
     /*
     TODO: View should hold reference to the game.
      */
@@ -43,7 +43,7 @@ public class ScoreboardView implements IView, IObserver {
 
     public void createView() {
         for (int player=0; player<game.nbPlayers; player++) {
-            scoreActors.put(player, new TextActor("0", Color.WHITE, game.bgColor, game.bigFont));
+            scoreActors.put(player, new TextActor("0", Color.WHITE, game.bgColor, FontSingleton.getInstance().getBigFont()));
             game.addActor(scoreActors.get(player), scoreLocations[player]);
         }
     }
@@ -55,13 +55,13 @@ public class ScoreboardView implements IView, IObserver {
             if (scoreActors.containsKey(player)) {
                 game.removeActor(scoreActors.get(player));
             }
-            scoreActors.put(player, new TextActor(String.valueOf(newScore.get(player)), Color.WHITE, game.bgColor, game.bigFont));
+            scoreActors.put(player, new TextActor(String.valueOf(newScore.get(player)), Color.WHITE, game.bgColor, FontSingleton.getInstance().getBigFont()));
             game.addActor(scoreActors.get(player), scoreLocations[player]);
         }
     }
 
     @Override
-    public void setSubject(ISubject subject) {
+    public void setSubject(IObservable subject) {
         this.topic=subject;
     }
 }

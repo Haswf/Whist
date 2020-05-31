@@ -1,13 +1,16 @@
 package whist;
 
 import ch.aplu.jcardgame.*;
-import ch.aplu.jgamegrid.*;
 import whist.controller.WhistController;
-import whist.interfaces.IController;
+import whist.view.ScoreboardView;
+import whist.view.TrickView;
 import whist.view.WhistView;
 
-import java.awt.Font;
-import java.util.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Whist extends CardGame {
@@ -57,12 +60,11 @@ public class Whist extends CardGame {
     public final int nbPlayers = 4;
     public final int nbStartCards = 13;
     public final int winningScore = 11;
-    private final Deck deck = new Deck(Suit.values(), Rank.values(), "cover");
+    private final Deck deck = DeckFactory.getInstance().createStandardDeck();
     private final int thinkingTime = 2000;
     public Hand[] hands;
     private boolean enforceRules = false;
     private Card selected;
-    Font bigFont = new Font("Serif", Font.BOLD, 36);
 
     private void initRound() {
         hands = deck.dealingOut(nbPlayers, nbStartCards); // Last element of hands is leftover cards; these are ignored
@@ -114,13 +116,9 @@ public class Whist extends CardGame {
                 delay(thinkingTime);
                 selected = npcs.get(nextPlayer).selectCardLead();
             }
-
-            // No restrictions on the card being lead
-            trick.getCards().setView(this, new RowLayout(trickView.trickLocation,
-                    (trick.getCards().getNumberOfCards()+2)*trickView.trickWidth));
-            trick.getCards().draw();
             Suit lead = (Suit) selected.getSuit();
-            selected.transfer(trick.cards, true); // transfer to trick (includes graphic effect)
+            trick.transfer(selected);
+//            selected.transfer(trick.cards, true); // transfer to trick (includes graphic effect)
             winner = nextPlayer;
             winningCard = selected;
             // End Lead
@@ -158,8 +156,7 @@ public class Whist extends CardGame {
                 // End Check
                 // transfer to trick (includes graphic effect)
 //                selected.transfer(trick.cards, true);
-                System.out.println(selected);
-                trick.addToTrick(selected);
+                trick.transfer(selected);
                 System.out.println("winning: suit = " + winningCard.getSuit() + ", rank = " + winningCard.getRankId());
                 System.out.println("played: suit = " + selected.getSuit() + ", rank = " + selected.getRankId());
                 if ( // beat current winner with higher card

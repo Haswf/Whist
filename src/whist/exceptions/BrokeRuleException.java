@@ -1,4 +1,4 @@
-package whist;
+package whist.exceptions;
 
 /**
  * An exception thrown when a player breaks a rule

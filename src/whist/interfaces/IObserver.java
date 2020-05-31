@@ -6,5 +6,5 @@ public interface IObserver {
     public void update();
 
     //attach with subject to observe
-    public void setSubject(ISubject subject);
+    public void setSubject(IObservable subject);
 }

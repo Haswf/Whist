@@ -1,18 +1,17 @@
-package whist;
+package whist.view;
 
-import ch.aplu.jcardgame.Card;
-import ch.aplu.jcardgame.Hand;
 import ch.aplu.jcardgame.RowLayout;
-import ch.aplu.jcardgame.TargetArea;
 import ch.aplu.jgamegrid.Location;
+import whist.Trick;
+import whist.Whist;
 import whist.interfaces.IObserver;
-import whist.interfaces.ISubject;
+import whist.interfaces.IObservable;
 import whist.interfaces.IView;
 
 public class TrickView implements IView, IObserver {
     private Whist game;
     private Trick model;
-    private ISubject topic;
+    private IObservable topic;
     public final Location hideLocation = new Location(-500, - 500);
     public final Location trickLocation = new Location(350, 350);
     public final int trickWidth = 40;
@@ -23,30 +22,30 @@ public class TrickView implements IView, IObserver {
         setSubject(model);
         topic.register(this);
     }
-    public void clearTrick(Hand trick) {
-        trick.setView(game, new RowLayout(hideLocation, 0));
-        trick.draw();
+    public void clearTrick() {
+        this.model.cards.setView(game, new RowLayout(hideLocation, 0));
+        this.model.cards.draw();
     }
 
     @Override
     public void update() {
         Trick trick = (Trick)topic.getUpdate(this);
         if (trick.isHidden) {
-            clearTrick(trick.cards);
+            clearTrick();
         } else {
-            showTrick(trick.cards);
+            showTrick();
         }
     }
 
     @Override
-    public void setSubject(ISubject subject) {
+    public void setSubject(IObservable subject) {
         this.topic = subject;
     }
 
-    public void showTrick(Hand trick) {
+    public void showTrick() {
         // Follow with selected card
-        trick.setView(game, new RowLayout(trickLocation, (trick.getNumberOfCards()+2)*trickWidth));
-        trick.draw();
+        this.model.cards.setView(game, new RowLayout(trickLocation, (this.model.cards.getNumberOfCards()+2)*trickWidth));
+        this.model.cards.draw();
     }
 
 }
