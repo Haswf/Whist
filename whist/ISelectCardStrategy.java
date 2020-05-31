@@ -2,7 +2,7 @@ import ch.aplu.jcardgame.Card;
 
 public interface ISelectCardStrategy {
 
-    //Card selectCard();
+    Card selectCardLead(Whist.Suit lead);
 
-    Card selectCard(Whist.Suit lead);
+    Card selectCardFollow(Whist.Suit lead);
 }

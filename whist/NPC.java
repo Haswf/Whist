@@ -8,21 +8,27 @@ public abstract class NPC implements ISelectCardStrategy {
     private int playerNumber;
     private Hand hand;
 
-    private INPCState state;
-
     public NPC(int playerNumber, Hand hand){
         this.playerNumber = playerNumber;
         this.hand = hand;
     }
 
-    /*@Override
-    public Card selectCard(){
-        return this.state.selectCard(this, null);
-    }*/
+    /**
+     * Concrete NPC will implement strategy
+     * @param lead
+     * @return
+     */
     @Override
-    public Card selectCard(Whist.Suit lead){
-        return this.state.selectCard(this, lead);
-    }
+    public abstract Card selectCardLead(Whist.Suit lead);
+
+    /**
+     * Concrete NPC wil implement strategy
+     * @param lead
+     * @return
+     */
+    @Override
+    public abstract Card selectCardFollow(Whist.Suit lead);
+
 
     public int getPlayerNumber() {
         return playerNumber;
@@ -39,11 +45,4 @@ public abstract class NPC implements ISelectCardStrategy {
         int x = random.nextInt(hand.getNumberOfCards());
         return hand.get(x);
     }
-
-    //return a random card with additional conditions in LeadState
-    public abstract Card selectRandomCard(Whist.Suit lead);
-
-    // returns a random card with additional con
-    public abstract Card selectRandomCard();
-
 }
