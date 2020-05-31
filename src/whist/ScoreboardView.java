@@ -1,5 +1,7 @@
 package whist;
 
+import ch.aplu.jcardgame.Hand;
+import ch.aplu.jcardgame.TargetArea;
 import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.Location;
 import ch.aplu.jgamegrid.TextActor;
@@ -7,6 +9,7 @@ import whist.interfaces.IController;
 import whist.interfaces.IObserver;
 import whist.interfaces.ISubject;
 import whist.interfaces.IView;
+import whist.view.WhistView;
 
 import java.awt.*;
 import java.util.HashMap;
