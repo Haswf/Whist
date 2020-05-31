@@ -11,11 +11,11 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Whist extends CardGame {
-    Scoreboard scoreboard;
-    ScoreboardView scoreboardView;
-    WhistView whistView;
-    Trick trick;
-    TrickView trickView;
+    private Scoreboard scoreboard;
+    private ScoreboardView scoreboardView;
+    private WhistView whistView;
+    private Trick trick;
+    private TrickView trickView;
     private ArrayList<NPC> npcs;
 
     public enum Suit {
