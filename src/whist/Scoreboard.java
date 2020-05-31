@@ -1,14 +1,14 @@
 package whist;
 
 import whist.interfaces.IObserver;
-import whist.interfaces.ISubject;
+import whist.interfaces.IObservable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Scoreboard implements ISubject {
+public class Scoreboard implements IObservable {
     private final Map<Integer, Integer> scores;
     private boolean changed;
     private int nbPlayers;

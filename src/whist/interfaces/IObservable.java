@@ -1,6 +1,6 @@
 package whist.interfaces;
 
-public interface ISubject {
+public interface IObservable {
     //methods to register and unregister observers
     public void register(IObserver obj);
     public void unregister(IObserver obj);

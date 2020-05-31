@@ -2,11 +2,15 @@ package whist;
 
 import ch.aplu.jcardgame.*;
 import whist.controller.WhistController;
+import whist.view.ScoreboardView;
 import whist.view.TrickView;
 import whist.view.WhistView;
-import whist.DeckFactory;
-import java.awt.Font;
-import java.util.*;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Whist extends CardGame {
@@ -60,7 +64,6 @@ public class Whist extends CardGame {
     public Hand[] hands;
     private boolean enforceRules = false;
     private Card selected;
-    Font bigFont = new Font("Serif", Font.BOLD, 36);
 
     private ArrayList<NPC> npcs;
 

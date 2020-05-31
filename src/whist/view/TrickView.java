@@ -1,20 +1,17 @@
 package whist.view;
 
-import ch.aplu.jcardgame.Card;
-import ch.aplu.jcardgame.Hand;
 import ch.aplu.jcardgame.RowLayout;
-import ch.aplu.jcardgame.TargetArea;
 import ch.aplu.jgamegrid.Location;
 import whist.Trick;
 import whist.Whist;
 import whist.interfaces.IObserver;
-import whist.interfaces.ISubject;
+import whist.interfaces.IObservable;
 import whist.interfaces.IView;
 
 public class TrickView implements IView, IObserver {
     private Whist game;
     private Trick model;
-    private ISubject topic;
+    private IObservable topic;
     public final Location hideLocation = new Location(-500, - 500);
     public final Location trickLocation = new Location(350, 350);
     public final int trickWidth = 40;
@@ -41,7 +38,7 @@ public class TrickView implements IView, IObserver {
     }
 
     @Override
-    public void setSubject(ISubject subject) {
+    public void setSubject(IObservable subject) {
         this.topic = subject;
     }
 

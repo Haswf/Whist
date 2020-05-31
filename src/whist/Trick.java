@@ -1,15 +1,14 @@
 package whist;
 
 import ch.aplu.jcardgame.Card;
-import ch.aplu.jcardgame.Deck;
 import ch.aplu.jcardgame.Hand;
 import whist.interfaces.IObserver;
-import whist.interfaces.ISubject;
+import whist.interfaces.IObservable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Trick implements ISubject {
+public class Trick implements IObservable {
     public boolean isHidden = false;
     public final Hand cards;
     private boolean changed;
