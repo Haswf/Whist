@@ -11,11 +11,12 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Whist extends CardGame {
-    Scoreboard scoreboard;
-    ScoreboardView scoreboardView;
-    WhistView whistView;
-    Trick trick;
-    TrickView trickView;
+    private Scoreboard scoreboard;
+    private ScoreboardView scoreboardView;
+    private WhistView whistView;
+    private Trick trick;
+    private TrickView trickView;
+    private ArrayList<NPC> npcs;
 
     public enum Suit {
         SPADES, HEARTS, DIAMONDS, CLUBS
@@ -63,8 +64,6 @@ public class Whist extends CardGame {
     private Card selected;
     Font bigFont = new Font("Serif", Font.BOLD, 36);
 
-    private ArrayList<NPC> npcs;
-
     private void initRound() {
         hands = deck.dealingOut(nbPlayers, nbStartCards); // Last element of hands is leftover cards; these are ignored
         for (int i = 0; i < nbPlayers; i++) {
@@ -85,7 +84,7 @@ public class Whist extends CardGame {
 
         // Set up NPCs
         for (int i = 0; i < nbPlayers; i++){
-            npcs.add(new LegalNPC(i, hands[i]));
+            npcs.add(new SmartNPC(i, hands[i]));
         }
     }
 
@@ -159,6 +158,7 @@ public class Whist extends CardGame {
                 // End Check
                 // transfer to trick (includes graphic effect)
 //                selected.transfer(trick.cards, true);
+                System.out.println(selected);
                 trick.addToTrick(selected);
                 System.out.println("winning: suit = " + winningCard.getSuit() + ", rank = " + winningCard.getRankId());
                 System.out.println("played: suit = " + selected.getSuit() + ", rank = " + selected.getRankId());
