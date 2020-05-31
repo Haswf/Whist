@@ -18,7 +18,7 @@ public class LegalNPC extends NPC{
     }
 
     @Override
-    public Card selectCardFollow(Whist.Suit lead) {
+    public Card selectCardFollow(Whist.Suit lead, Card winningCard) {
         // Until we select a valid card loop
         do {
 

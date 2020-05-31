@@ -27,7 +27,7 @@ public abstract class NPC implements ISelectCardStrategy {
      * @return
      */
     @Override
-    public abstract Card selectCardFollow(Whist.Suit lead);
+    public abstract Card selectCardFollow(Whist.Suit lead, Card winningCard, Whist.Suit trump);
 
 
     public int getPlayerNumber() {
