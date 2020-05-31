@@ -1,3 +1,5 @@
+package whist;
+
 /**
  * An exception thrown when a player breaks a rule
  */

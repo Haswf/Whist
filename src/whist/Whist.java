@@ -1,5 +1,7 @@
+package whist;
 import ch.aplu.jcardgame.*;
 import ch.aplu.jgamegrid.*;
+import whist.interfaces.IController;
 
 import java.awt.Font;
 import java.util.*;

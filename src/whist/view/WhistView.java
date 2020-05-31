@@ -1,5 +1,10 @@
+package whist.view;
+
 import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.Location;
+import whist.interfaces.IController;
+import whist.interfaces.IView;
+import whist.Whist;
 
 import java.util.Optional;
 

@@ -1,4 +1,7 @@
+package whist.interfaces;
+
 import ch.aplu.jcardgame.Card;
+import whist.Whist;
 
 public interface ISelectCardStrategy {
 

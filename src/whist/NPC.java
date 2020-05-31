@@ -1,5 +1,9 @@
+package whist;
+
 import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
+import whist.interfaces.ISelectCardStrategy;
+
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -14,7 +18,7 @@ public abstract class NPC implements ISelectCardStrategy {
     }
 
     /**
-     * Concrete NPC will implement strategy
+     * Concrete whist.NPC will implement strategy
      * @param lead
      * @return
      */
@@ -22,7 +26,7 @@ public abstract class NPC implements ISelectCardStrategy {
     public abstract Card selectCardLead(Whist.Suit lead);
 
     /**
-     * Concrete NPC wil implement strategy
+     * Concrete whist.NPC wil implement strategy
      * @param lead
      * @return
      */

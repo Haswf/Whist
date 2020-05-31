@@ -1,3 +1,8 @@
+package whist;
+
+import whist.interfaces.IObserver;
+import whist.interfaces.ISubject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

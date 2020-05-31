@@ -1,4 +1,7 @@
+package whist;
+
 import ch.aplu.jcardgame.Card;
+import whist.interfaces.INPCState;
 
 public class FollowStateSmart implements INPCState {
     @Override

@@ -1,9 +1,14 @@
+package whist;
+
 import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.Location;
 import ch.aplu.jgamegrid.TextActor;
+import whist.interfaces.IController;
+import whist.interfaces.IObserver;
+import whist.interfaces.ISubject;
+import whist.interfaces.IView;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
