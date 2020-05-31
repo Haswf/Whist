@@ -13,9 +13,9 @@ public class TrickView implements IView, IObserver {
     private Whist game;
     private Trick model;
     private ISubject topic;
-    private Location hideLocation = new Location(-500, - 500);
+    public final Location hideLocation = new Location(-500, - 500);
     public final Location trickLocation = new Location(350, 350);
-    private final int trickWidth = 40;
+    public final int trickWidth = 40;
 
     public TrickView(Whist game, Trick model) {
         this.game = game;

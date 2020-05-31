@@ -21,6 +21,10 @@ public class Trick implements ISubject {
         this.observers = new ArrayList<>();
     }
 
+    public Hand getCards(){
+        return this.cards;
+    }
+
     public void addToTrick(Card selected) {
         selected.transfer(this.cards, true);
         changed = true;

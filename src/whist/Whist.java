@@ -98,7 +98,11 @@ public class Whist extends CardGame {
         Card winningCard;
         // randomly select player to lead for this round
         int nextPlayer = random.nextInt(nbPlayers);
+
+        // until all cards have been played
         for (int i = 0; i < nbStartCards; i++) {
+
+            trick = new Trick();
             selected = null;
             if (0 == nextPlayer) {  // Select lead depending on player type
                 hands[0].setTouchEnabled(true);
@@ -113,6 +117,9 @@ public class Whist extends CardGame {
             }
 
             // No restrictions on the card being lead
+            trick.getCards().setView(this, new RowLayout(trickView.trickLocation,
+                    (trick.getCards().getNumberOfCards()+2)*trickView.trickWidth));
+            trick.getCards().draw();
             Suit lead = (Suit) selected.getSuit();
             selected.transfer(trick.cards, true); // transfer to trick (includes graphic effect)
             winner = nextPlayer;
@@ -131,6 +138,9 @@ public class Whist extends CardGame {
                     selected = npcs.get(nextPlayer).selectCardFollow(lead, winningCard, trumps);
                 }
 
+                trick.getCards().setView(this, new RowLayout(trickView.trickLocation,
+                        (trick.getCards().getNumberOfCards()+2)*trickView.trickWidth));
+                trick.getCards().draw();
                 selected.setVerso(false);  // In case it is upside down
                 // Check: Following card must follow suit if possible
                 /*if (selected.getSuit() != lead && hands[nextPlayer].getNumberOfCardsWithSuit(lead) > 0) {
@@ -162,9 +172,13 @@ public class Whist extends CardGame {
                 }
                 // End Follow
             }
+            System.out.printf("End of trick\n");
             delay(600);
-            trick.isHidden = true;
-            whistView.clearTrump();
+
+            //trick.isHidden = true;
+
+            trick.getCards().setView(this, new RowLayout(trickView.hideLocation, 0));
+            trick.getCards().draw();
 
             nextPlayer = winner;
             setStatusText("Player " + nextPlayer + " wins trick.");
@@ -174,6 +188,7 @@ public class Whist extends CardGame {
             }
 
         }
+        whistView.clearTrump();
         return Optional.empty();
     }
 
