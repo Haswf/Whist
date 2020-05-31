@@ -11,6 +11,17 @@ import java.util.List;
 public class Trick implements IObservable {
     public boolean isHidden = false;
     public final Hand cards;
+
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
+        changed = true;
+        notifyObservers();
+    }
+
     private boolean changed;
     private List<IObserver> observers;
 

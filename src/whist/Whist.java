@@ -69,6 +69,7 @@ public class Whist extends CardGame {
     private void initRound() {
         hands = deck.dealingOut(nbPlayers, nbStartCards); // Last element of hands is leftover cards; these are ignored
         for (int i = 0; i < nbPlayers; i++) {
+            // TODO: Wrong delegation, model shouldn't know anything about view
             whistView.bindLayout(hands[i], i);
             hands[i].sort(Hand.SortType.SUITPRIORITY, true);
 
@@ -102,8 +103,8 @@ public class Whist extends CardGame {
 
         // until all cards have been played
         for (int i = 0; i < nbStartCards; i++) {
-
             trick = new Trick();
+            trickView = new TrickView(this, trick);
             selected = null;
             if (0 == nextPlayer) {  // Select lead depending on player type
                 hands[0].setTouchEnabled(true);
@@ -118,7 +119,6 @@ public class Whist extends CardGame {
             }
             Suit lead = (Suit) selected.getSuit();
             trick.transfer(selected);
-//            selected.transfer(trick.cards, true); // transfer to trick (includes graphic effect)
             winner = nextPlayer;
             winningCard = selected;
             // End Lead
@@ -135,9 +135,7 @@ public class Whist extends CardGame {
                     selected = npcs.get(nextPlayer).selectCardFollow(lead, winningCard, trumps);
                 }
 
-                trick.getCards().setView(this, new RowLayout(trickView.trickLocation,
-                        (trick.getCards().getNumberOfCards()+2)*trickView.trickWidth));
-                trick.getCards().draw();
+                trick.transfer(selected);
                 selected.setVerso(false);  // In case it is upside down
                 // Check: Following card must follow suit if possible
                 /*if (selected.getSuit() != lead && hands[nextPlayer].getNumberOfCardsWithSuit(lead) > 0) {
@@ -155,8 +153,6 @@ public class Whist extends CardGame {
                 }*/
                 // End Check
                 // transfer to trick (includes graphic effect)
-//                selected.transfer(trick.cards, true);
-                trick.transfer(selected);
                 System.out.println("winning: suit = " + winningCard.getSuit() + ", rank = " + winningCard.getRankId());
                 System.out.println("played: suit = " + selected.getSuit() + ", rank = " + selected.getRankId());
                 if ( // beat current winner with higher card
@@ -170,12 +166,7 @@ public class Whist extends CardGame {
                 // End Follow
             }
             System.out.printf("End of trick\n");
-            delay(600);
-
-            //trick.isHidden = true;
-
-            trick.getCards().setView(this, new RowLayout(trickView.hideLocation, 0));
-            trick.getCards().draw();
+            trick.setHidden(true);
 
             nextPlayer = winner;
             setStatusText("Player " + nextPlayer + " wins trick.");

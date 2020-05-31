@@ -31,6 +31,7 @@ public class TrickView implements IView, IObserver {
     public void update() {
         Trick trick = (Trick)topic.getUpdate(this);
         if (trick.isHidden) {
+            game.delay(600);
             clearTrick();
         } else {
             showTrick();
