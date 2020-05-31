@@ -12,18 +12,14 @@ public class LegalNPC extends NPC{
     }
 
     @Override
-    public Card selectCardLead(Whist.Suit lead) {
+    public Card selectCardLead() {
         // lead with any random card
         return this.randomCard(this.getHand());
     }
 
     @Override
-    public Card selectCardFollow(Whist.Suit lead, Card winningCard, Whist.Suit trump) {
-        return null;
-    }
-
-    public Card selectCardFollow(Whist.Suit lead, Card winningCard) {
-        // Until we select a valid card loop
+    public Card selectCardFollow(Whist.Suit lead, Card winningCard,  Whist.Suit trump) {
+        // Until we select a valid card, loop
         do {
 
             selected = randomCard(this.getHand());

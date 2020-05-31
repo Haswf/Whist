@@ -19,11 +19,10 @@ public abstract class NPC implements ISelectCardStrategy {
 
     /**
      * Concrete whist.NPC will implement strategy
-     * @param lead
      * @return
      */
     @Override
-    public abstract Card selectCardLead(Whist.Suit lead);
+    public abstract Card selectCardLead();
 
     /**
      * Concrete whist.NPC wil implement strategy
@@ -45,7 +44,6 @@ public abstract class NPC implements ISelectCardStrategy {
     // return random Card from Hand
     public Card randomCard(Hand hand){
         final Random random = ThreadLocalRandom.current();
-        System.out.print(hand.getNumberOfCards());
         int x = random.nextInt(hand.getNumberOfCards());
         return hand.get(x);
     }

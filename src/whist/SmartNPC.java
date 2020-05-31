@@ -11,7 +11,7 @@ public class SmartNPC extends NPC {
     }
 
     @Override
-    public Card selectCardLead(Whist.Suit lead) {
+    public Card selectCardLead() {
         // lead with 'best card'
         int bestCardIndex = this.getHand().getMaxPosition(Hand.SortType.RANKPRIORITY);
         return this.getHand().get(bestCardIndex);

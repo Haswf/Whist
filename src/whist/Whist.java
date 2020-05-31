@@ -63,12 +63,14 @@ public class Whist extends CardGame {
     private Card selected;
     Font bigFont = new Font("Serif", Font.BOLD, 36);
 
+    private ArrayList<NPC> npcs;
 
     private void initRound() {
         hands = deck.dealingOut(nbPlayers, nbStartCards); // Last element of hands is leftover cards; these are ignored
         for (int i = 0; i < nbPlayers; i++) {
             whistView.bindLayout(hands[i], i);
             hands[i].sort(Hand.SortType.SUITPRIORITY, true);
+
         }
 
         // Set up human player for interaction
@@ -80,6 +82,11 @@ public class Whist extends CardGame {
             }
         };
         hands[0].addCardListener(cardListener);
+
+        // Set up NPCs
+        for (int i = 0; i < nbPlayers; i++){
+            npcs.add(new LegalNPC(i, hands[i]));
+        }
     }
 
     private Optional<Integer> playRound() {  // Returns winner, if any
@@ -97,10 +104,12 @@ public class Whist extends CardGame {
                 hands[0].setTouchEnabled(true);
                 setStatusText("Player 0 double-click on card to lead.");
                 while (null == selected) delay(100);
-            } else {
+            }
+            // npc
+            else {
                 setStatusText("Player " + nextPlayer + " thinking...");
                 delay(thinkingTime);
-                selected = randomCard(hands[nextPlayer]);
+                selected = npcs.get(nextPlayer).selectCardLead();
             }
 
             // No restrictions on the card being lead
@@ -119,12 +128,12 @@ public class Whist extends CardGame {
                 } else {
                     setStatusText("Player " + nextPlayer + " thinking...");
                     delay(thinkingTime);
-                    selected = randomCard(hands[nextPlayer]);
+                    selected = npcs.get(nextPlayer).selectCardFollow(lead, winningCard, trumps);
                 }
 
                 selected.setVerso(false);  // In case it is upside down
                 // Check: Following card must follow suit if possible
-                if (selected.getSuit() != lead && hands[nextPlayer].getNumberOfCardsWithSuit(lead) > 0) {
+                /*if (selected.getSuit() != lead && hands[nextPlayer].getNumberOfCardsWithSuit(lead) > 0) {
                     // Rule violation
                     String violation = "Follow rule broken by player " + nextPlayer + " attempting to play " + selected;
                     System.out.println(violation);
@@ -136,7 +145,7 @@ public class Whist extends CardGame {
                             System.out.println("A cheating player spoiled the game!");
                             System.exit(0);
                         }
-                }
+                }*/
                 // End Check
                 // transfer to trick (includes graphic effect)
 //                selected.transfer(trick.cards, true);
@@ -175,6 +184,7 @@ public class Whist extends CardGame {
         whistView = new WhistView(new WhistController(), this);
         trick = new Trick();
         trickView = new TrickView(this, trick);
+        npcs = new ArrayList<>();
         setStatusText("Initializing...");
         Optional<Integer> winner;
         do {
