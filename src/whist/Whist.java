@@ -14,6 +14,8 @@ public class Whist extends CardGame {
     Scoreboard scoreboard;
     ScoreboardView scoreboardView;
     WhistView whistView;
+    Trick trick;
+    TrickView trickView;
 
     public enum Suit {
         SPADES, HEARTS, DIAMONDS, CLUBS
@@ -85,13 +87,11 @@ public class Whist extends CardGame {
         whistView.showTrump(trumps);
 
         // End trump suit
-        Hand trick;
         int winner;
         Card winningCard;
         // randomly select player to lead for this round
         int nextPlayer = random.nextInt(nbPlayers);
         for (int i = 0; i < nbStartCards; i++) {
-            trick = new Hand(deck);
             selected = null;
             if (0 == nextPlayer) {  // Select lead depending on player type
                 hands[0].setTouchEnabled(true);
@@ -105,7 +105,7 @@ public class Whist extends CardGame {
 
             // No restrictions on the card being lead
             Suit lead = (Suit) selected.getSuit();
-            selected.transfer(trick, true); // transfer to trick (includes graphic effect)
+            selected.transfer(trick.cards, true); // transfer to trick (includes graphic effect)
             winner = nextPlayer;
             winningCard = selected;
             // End Lead
@@ -122,7 +122,7 @@ public class Whist extends CardGame {
                     selected = randomCard(hands[nextPlayer]);
                 }
 
-                whistView.showTrick(trick, selected);
+                selected.setVerso(false);  // In case it is upside down
                 // Check: Following card must follow suit if possible
                 if (selected.getSuit() != lead && hands[nextPlayer].getNumberOfCardsWithSuit(lead) > 0) {
                     // Rule violation
@@ -138,9 +138,11 @@ public class Whist extends CardGame {
                         }
                 }
                 // End Check
-                selected.transfer(trick, true); // transfer to trick (includes graphic effect)
+                // transfer to trick (includes graphic effect)
+//                selected.transfer(trick.cards, true);
+                trick.addToTrick(selected);
                 System.out.println("winning: suit = " + winningCard.getSuit() + ", rank = " + winningCard.getRankId());
-                System.out.println(" played: suit = " + selected.getSuit() + ", rank = " + selected.getRankId());
+                System.out.println("played: suit = " + selected.getSuit() + ", rank = " + selected.getRankId());
                 if ( // beat current winner with higher card
                         (selected.getSuit() == winningCard.getSuit() && rankGreater(selected, winningCard)) ||
                                 // trumped when non-trump was winning
@@ -152,7 +154,7 @@ public class Whist extends CardGame {
                 // End Follow
             }
             delay(600);
-            whistView.clearTrick(trick);
+            trick.isHidden = true;
             whistView.clearTrump();
 
             nextPlayer = winner;
@@ -171,6 +173,8 @@ public class Whist extends CardGame {
         scoreboard = new Scoreboard(nbPlayers);
         scoreboardView = new ScoreboardView(null, scoreboard, this);
         whistView = new WhistView(new WhistController(), this);
+        trick = new Trick();
+        trickView = new TrickView(this, trick);
         setStatusText("Initializing...");
         Optional<Integer> winner;
         do {

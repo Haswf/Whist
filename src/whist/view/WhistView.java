@@ -7,6 +7,8 @@ import ch.aplu.jcardgame.TargetArea;
 import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.Location;
 import whist.interfaces.IController;
+import whist.interfaces.IObserver;
+import whist.interfaces.ISubject;
 import whist.interfaces.IView;
 import whist.Whist;
 
@@ -19,14 +21,13 @@ import java.util.Optional;
 
 public class WhistView implements IView {
     final String trumpImage[] = {"bigspade.gif","bigheart.gif","bigdiamond.gif","bigclub.gif"};
+    private Object topic;
     Actor trumpsActor;
+    public final Location trickLocation = new Location(350, 350);
     private Map<Integer, RowLayout> layouts;
-    private final Location trickLocation = new Location(350, 350);
-    private Location hideLocation = new Location(-500, - 500);
     private Location trumpsActorLocation = new Location(50, 50);
     private IController controller;
     private final int handWidth = 400;
-    private final int trickWidth = 40;
     private final Location[] handLocations = {
             new Location(350, 625),
             new Location(75, 350),
@@ -34,11 +35,6 @@ public class WhistView implements IView {
             new Location(625, 350)
     };
 
-    public void bindLayout(Hand hand, int player) {
-        hand.setView(model, layouts.get(player));
-        hand.setTargetArea(new TargetArea(trickLocation));
-        hand.draw();
-    }
 
 
     private final Location textLocation = new Location(350, 450);
@@ -52,23 +48,18 @@ public class WhistView implements IView {
         createView();
     }
 
+    public void bindLayout(Hand hand, int player) {
+        hand.setView(model, layouts.get(player));
+        hand.setTargetArea(new TargetArea(trickLocation));
+        hand.draw();
+    }
+
     public void createView() {
         for (int i = 0; i < model.nbPlayers; i++) {
             RowLayout playerLayout = new RowLayout(handLocations[i], handWidth);
             playerLayout.setRotationAngle(90 * i);
             layouts.put(i, playerLayout);
         }
-    }
-    public void showTrick(Hand trick, Card selected) {
-        // Follow with selected card
-        trick.setView(model, new RowLayout(trickLocation, (trick.getNumberOfCards()+2)*trickWidth));
-        trick.draw();
-        selected.setVerso(false);  // In case it is upside down
-    }
-
-    public void clearTrick(Hand trick) {
-        trick.setView(model, new RowLayout(hideLocation, 0));
-        trick.draw();
     }
 
     public void onGameOver(Optional<Integer> winner) {
