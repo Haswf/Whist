@@ -1,17 +1,15 @@
-// Whist.java
-
 import ch.aplu.jcardgame.*;
 import ch.aplu.jgamegrid.*;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-@SuppressWarnings("serial")
 public class Whist extends CardGame {
-	
-  public enum Suit
+	Scoreboard scoreboard;
+	ScoreboardView scoreboardView;
+
+	public enum Suit
   {
     SPADES, HEARTS, DIAMONDS, CLUBS
   }
@@ -40,7 +38,7 @@ public class Whist extends CardGame {
   }
  
   // return random Card from ArrayList
-  public static Card randomCard(ArrayList<Card> list){
+  public static Card randomCard(List<Card> list){
       int x = random.nextInt(list.size());
       return list.get(x);
   }
@@ -49,55 +47,49 @@ public class Whist extends CardGame {
 	  return card1.getRankId() < card2.getRankId(); // Warning: Reverse rank order of cards (see comment on enum)
   }
 	 
-  private final String version = "1.0";
+  public final String version = "1.0";
   public final int nbPlayers = 4;
   public final int nbStartCards = 13;
   public final int winningScore = 11;
-  private final int handWidth = 400;
-  private final int trickWidth = 40;
+
   private final Deck deck = new Deck(Suit.values(), Rank.values(), "cover");
-  private final Location[] handLocations = {
-			  new Location(350, 625),
-			  new Location(75, 350),
-			  new Location(350, 75),
-			  new Location(625, 350)
-	  };
-  private final Location[] scoreLocations = {
-			  new Location(575, 675),
-			  new Location(25, 575),
-			  new Location(575, 25),
-			  new Location(650, 575)
-	  };
-  private Actor[] scoreActors = {null, null, null, null };
-  private final Location trickLocation = new Location(350, 350);
-  private final Location textLocation = new Location(350, 450);
+
   private final int thinkingTime = 2000;
   private Hand[] hands;
-  private Location hideLocation = new Location(-500, - 500);
-  private Location trumpsActorLocation = new Location(50, 50);
   private boolean enforceRules=false;
+	private IController controller;
+	private final int handWidth = 400;
+	private final int trickWidth = 40;
+	private final Location[] handLocations = {
+			new Location(350, 625),
+			new Location(75, 350),
+			new Location(350, 75),
+			new Location(625, 350)
+	};
 
-  public void setStatus(String string) { setStatusText(string); }
-  
-private int[] scores = new int[nbPlayers];
+	private final Location trickLocation = new Location(350, 350);
+	private Location hideLocation = new Location(-500, - 500);
+	private Location trumpsActorLocation = new Location(50, 50);
 
 Font bigFont = new Font("Serif", Font.BOLD, 36);
 
-private void initScore() {
-	 for (int i = 0; i < nbPlayers; i++) {
-		 scores[i] = 0;
-		 scoreActors[i] = new TextActor("0", Color.WHITE, bgColor, bigFont);
-		 addActor(scoreActors[i], scoreLocations[i]);
-	 }
-  }
-
-private void updateScore(int player) {
-	removeActor(scoreActors[player]);
-	scoreActors[player] = new TextActor(String.valueOf(scores[player]), Color.WHITE, bgColor, bigFont);
-	addActor(scoreActors[player], scoreLocations[player]);
-}
+//private void initScore() {
+//	for (int i = 0; i < nbPlayers; i++) {
+//		scores[i] = 0;
+//		scoreActors[i] = new TextActor("0", Color.WHITE, bgColor, bigFont);
+//		addActor(scoreActors[i], scoreLocations[i]);
+//	}
+//}
+//
+//private void updateScore(int player) {
+//	removeActor(scoreActors[player]);
+//	scoreActors[player] = new TextActor(String.valueOf(scores[player]), Color.WHITE, bgColor, bigFont);
+//	addActor(scoreActors[player], scoreLocations[player]);
+//}
 
 private Card selected;
+
+
 
 private void initRound() {
 		 hands = deck.dealingOut(nbPlayers, nbStartCards); // Last element of hands is leftover cards; these are ignored
@@ -135,13 +127,14 @@ private Optional<Integer> playRound() {  // Returns winner, if any
 	int winner;
 	Card winningCard;
 	Suit lead;
-	int nextPlayer = random.nextInt(nbPlayers); // randomly select player to lead for this round
+	// randomly select player to lead for this round
+	int nextPlayer = random.nextInt(nbPlayers);
 	for (int i = 0; i < nbStartCards; i++) {
 		trick = new Hand(deck);
     	selected = null;
         if (0 == nextPlayer) {  // Select lead depending on player type
     		hands[0].setTouchEnabled(true);
-    		setStatus("Player 0 double-click on card to lead.");
+    		setStatusText("Player 0 double-click on card to lead.");
     		while (null == selected) delay(100);
         } else {
     		setStatusText("Player " + nextPlayer + " thinking...");
@@ -163,7 +156,7 @@ private Optional<Integer> playRound() {  // Returns winner, if any
 			selected = null;
 	        if (0 == nextPlayer) {
 	    		hands[0].setTouchEnabled(true);
-	    		setStatus("Player 0 double-click on card to follow.");
+	    		setStatusText("Player 0 double-click on card to follow.");
 	    		while (null == selected) delay(100);
 	        } else {
 		        setStatusText("Player " + nextPlayer + " thinking...");
@@ -207,28 +200,25 @@ private Optional<Integer> playRound() {  // Returns winner, if any
 		trick.draw();		
 		nextPlayer = winner;
 		setStatusText("Player " + nextPlayer + " wins trick.");
-		scores[nextPlayer]++;
-		updateScore(nextPlayer);
-		if (winningScore == scores[nextPlayer]) return Optional.of(nextPlayer);
+		scoreboard.updateScore(nextPlayer, scoreboard.getScoreByPlayer(nextPlayer) + 1);
+		if (winningScore == scoreboard.getScoreByPlayer(nextPlayer)) {
+			return Optional.of(nextPlayer);
+		}
 	}
 	removeActor(trumpsActor);
 	return Optional.empty();
 }
 
-  public Whist()
-  {
+  public Whist()  {
     super(700, 700, 30);
-    setTitle("Whist (V" + version + ") Constructed for UofM SWEN30006 with JGameGrid (www.aplu.ch)");
+    scoreboard  = new Scoreboard(nbPlayers);
+    scoreboardView = new ScoreboardView(null, scoreboard, this);
     setStatusText("Initializing...");
-    initScore();
     Optional<Integer> winner;
     do { 
       initRound();
       winner = playRound();
     } while (!winner.isPresent());
-    addActor(new Actor("sprites/gameover.gif"), textLocation);
-    setStatusText("Game over. Winner is player: " + winner.get());
-    refresh();
   }
 
   public static void main(String[] args)
@@ -236,5 +226,6 @@ private Optional<Integer> playRound() {  // Returns winner, if any
 	// System.out.println("Working Directory = " + System.getProperty("user.dir"));
     new Whist();
   }
+
 
 }
