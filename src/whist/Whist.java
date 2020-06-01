@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+// MOVE NPC INSTANTIATION TO WHIST CONSTRUCTOR
 public class Whist extends CardGame {
     private Scoreboard scoreboard;
     private ScoreboardView scoreboardView;
@@ -87,7 +88,7 @@ public class Whist extends CardGame {
 
         // Set up NPCs
         for (int i = 0; i < nbPlayers; i++){
-            npcs.add(new SmartNPC(i, hands[i]));
+            npcs.add(new SmartNPC(i, hands[i], trick));
         }
     }
 
@@ -121,6 +122,10 @@ public class Whist extends CardGame {
             trick.transfer(selected);
             winner = nextPlayer;
             winningCard = selected;
+
+            // Notify observers of card played
+
+
             // End Lead
             for (int j = 1; j < nbPlayers; j++) {
                 if (++nextPlayer >= nbPlayers) nextPlayer = 0;  // From last back to first
@@ -137,21 +142,7 @@ public class Whist extends CardGame {
 
                 trick.transfer(selected);
                 selected.setVerso(false);  // In case it is upside down
-                // Check: Following card must follow suit if possible
-                /*if (selected.getSuit() != lead && hands[nextPlayer].getNumberOfCardsWithSuit(lead) > 0) {
-                    // Rule violation
-                    String violation = "Follow rule broken by player " + nextPlayer + " attempting to play " + selected;
-                    System.out.println(violation);
-                    if (enforceRules)
-                        try {
-                            throw (new BrokeRuleException(violation));
-                        } catch (BrokeRuleException e) {
-                            e.printStackTrace();
-                            System.out.println("A cheating player spoiled the game!");
-                            System.exit(0);
-                        }
-                }*/
-                // End Check
+
                 // transfer to trick (includes graphic effect)
                 System.out.println("winning: suit = " + winningCard.getSuit() + ", rank = " + winningCard.getRankId());
                 System.out.println("played: suit = " + selected.getSuit() + ", rank = " + selected.getRankId());

@@ -2,19 +2,30 @@ package whist;
 
 import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
+import whist.interfaces.IObservable;
+import whist.interfaces.IObserver;
 import whist.interfaces.ISelectCardStrategy;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class NPC implements ISelectCardStrategy {
+// Need to register NPCs as observers to Trick
+public abstract class NPC implements ISelectCardStrategy, IObserver {
 
     private int playerNumber;
     private Hand hand;
 
-    public NPC(int playerNumber, Hand hand){
+    private Trick model;
+    private IObservable topic;
+    private Hand info;
+
+    public NPC(int playerNumber, Hand hand, Trick model){
         this.playerNumber = playerNumber;
         this.hand = hand;
+        this.model = model;
+        // setting topic = Trick
+        setSubject(model);
+        topic.register(this);
     }
 
     /**
@@ -31,6 +42,20 @@ public abstract class NPC implements ISelectCardStrategy {
      */
     @Override
     public abstract Card selectCardFollow(Whist.Suit lead, Card winningCard, Whist.Suit trump);
+
+    @Override
+    public void update() {
+        // get access to the trick
+        Trick trick = (Trick)topic.getUpdate(this);
+
+        // store current state of the hand
+        this.hand = trick.getCards();
+    }
+
+    @Override
+    public void setSubject(IObservable subject) {
+        this.topic = subject;
+    }
 
 
     public int getPlayerNumber() {

@@ -2,12 +2,13 @@ package whist;
 
 import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
+import whist.interfaces.IObservable;
 
 public class SmartNPC extends NPC {
 
     private Card selected;
-    public SmartNPC(int playerNumber, Hand hand){
-        super(playerNumber, hand);
+    public SmartNPC(int playerNumber, Hand hand, Trick model){
+        super(playerNumber, hand, model);
     }
 
     @Override
