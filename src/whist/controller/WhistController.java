@@ -128,8 +128,4 @@ public class WhistController {
         view.clearTrump();
         return Optional.empty();
     }
-
-    private int updateWinner() {
-
-    }
 }
