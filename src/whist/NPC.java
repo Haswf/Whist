@@ -70,22 +70,22 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
 
         // store current state of the hand
         this.info = trick.getCards();
-        System.out.println("State of hand info:");
-        System.out.println(info);
+        //System.out.println("State of hand info:");
+        //System.out.println(info);
 
         // if card played did not follow suit, update player suit map
         Whist.Suit trumpSuit = (Whist.Suit) trick.getCards().getFirst().getSuit();
         Whist.Suit recentCardSuit = (Whist.Suit) trick.getRecentCard().getSuit();
 
         if(!recentCardSuit.equals(trumpSuit)){
-            System.out.println("Updating playerSuits");
-            System.out.println(trick.getRecentCard());
-            System.out.println(trick.getRecentCardPlayerNum());
+            //System.out.println("Updating playerSuits");
+            //System.out.println(trick.getRecentCard());
+            //System.out.println(trick.getRecentCardPlayerNum());
             nest = player_suits.get(trick.getRecentCardPlayerNum());
-            System.out.println(nest);
+            //System.out.println(nest);
             nest.put(trumpSuit, false);
-            System.out.println(nest);
-            System.out.println(player_suits);
+            //System.out.println(nest);
+            //System.out.println(player_suits);
         }
     }
 

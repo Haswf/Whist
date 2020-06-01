@@ -32,12 +32,24 @@ public class SmartNPC extends NPC {
         // if can follow suit, play card to beat winningCard
         if(!validHand.isEmpty()){
 
-            System.out.print("Playing best card of valid suit\n");
-
-            // for now just play best card of the valid suit
             int bestValidCardIndex = validHand.getMaxPosition(Hand.SortType.RANKPRIORITY);
             Card selectedToBe = validHand.get(bestValidCardIndex);
             System.out.println(selectedToBe);
+
+            // if can beat the card => beat the card
+            if(selectedToBe.compareTo(winningCard) < 1){
+                System.out.print("Playing best card of valid suit to win\n");
+                selected = getHand().getCard(selectedToBe.getCardNumber());
+            }
+            // if can't beat the card => use a low card
+            else{
+                System.out.print("Can't win play lowest card of suit\n");
+                selectedToBe = validHand.sort(Hand.SortType.RANKPRIORITY, true);
+                selected = getHand().getCard(selectedToBe.getCardNumber());
+            }
+
+            // for now just play best card of the valid suit
+
             selected = getHand().getCard(selectedToBe.getCardNumber());
             return selected;
         }
