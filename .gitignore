@@ -23,6 +23,7 @@
 hs_err_pid*
 
 .classpath
+.idea/
 .idea/.gitignore
 .idea/Whist.iml
 .idea/checkstyle-idea.xml
@@ -31,3 +32,5 @@ hs_err_pid*
 .idea/sonarlint/
 .idea/vcs.xml
 .project
+
+out/
