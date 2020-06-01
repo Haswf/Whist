@@ -1,7 +1,6 @@
 package whist.controller;
 
 import ch.aplu.jcardgame.Card;
-import ch.aplu.jgamegrid.GameGrid;
 import whist.CardUtil;
 import whist.SmartNPC;
 import whist.Whist;
@@ -49,6 +48,17 @@ public class WhistController {
         view.onGameOver(winner);
     }
 
+    private Card playerSelectCard() {
+        view.selectCard();
+        return view.getSelected();
+    }
+
+    private Card NPCSelectCard(int player) {
+        Whist.getInstance().setStatusText("Player " + player + " thinking...");
+        Whist.getInstance().delay(Whist.getInstance().thinkingTime);
+        return model.getNpcs().get(player).selectCardLead();
+    }
+
     public Optional<Integer> playRound() {  // Returns winner, if any
         Card selected;
 
@@ -65,16 +75,13 @@ public class WhistController {
         for (int i = 0; i < model.getNbStartCards(); i++) {
 
             if (0 == nextPlayer) {  // Select lead depending on player type
-                view.selectCard();
-                selected = view.getSelected();
+                selected = playerSelectCard();
             }
             // npc
             else {
-                Whist.getInstance().setStatusText("Player " + nextPlayer + " thinking...");
-                Whist.getInstance().delay(Whist.getInstance().thinkingTime);
-                selected = model.getNpcs().get(nextPlayer).selectCardLead();
+                selected = NPCSelectCard(nextPlayer);
             }
-            CardUtil.Suit lead = (CardUtil.Suit) selected.getSuit();
+//            CardUtil.Suit lead = (CardUtil.Suit) selected.getSuit();
             trickController.transfer(selected, nextPlayer);
             winner = nextPlayer;
             winningCard = selected;
@@ -86,14 +93,10 @@ public class WhistController {
                     nextPlayer = 0;  // From last back to first
                 }
                 if (0 == nextPlayer) {
-                    view.selectCard();
-                    selected = view.getSelected();
+                    selected = playerSelectCard();
                 } else {
-                    Whist.getInstance().setStatusText("Player " + nextPlayer + " thinking...");
-                    GameGrid.delay(Whist.getInstance().thinkingTime);
-                    selected = model.getNpcs().get(nextPlayer).selectCardFollow(lead, winningCard, trumps);
+                    selected = NPCSelectCard(nextPlayer);
                 }
-
                 trickController.transfer(selected, nextPlayer);
                 selected.setVerso(false);  // In case it is upside down
 
@@ -124,5 +127,9 @@ public class WhistController {
         }
         view.clearTrump();
         return Optional.empty();
+    }
+
+    private int updateWinner() {
+
     }
 }
