@@ -12,6 +12,9 @@ public class Trick implements IObservable {
     public boolean isHidden = false;
     public final Hand cards;
 
+    private Card recentCard;
+    private int recentCardPlayerNum;
+
     public boolean isHidden() {
         return isHidden;
     }
@@ -34,8 +37,10 @@ public class Trick implements IObservable {
         return this.cards;
     }
 
-    public void transfer(Card selected) {
+    public void transfer(Card selected, int playerNum) {
         selected.transfer(this.cards, true);
+        this.recentCard = selected;
+        this.recentCardPlayerNum = playerNum;
         changed = true;
         notifyObservers();
     }
@@ -74,5 +79,14 @@ public class Trick implements IObservable {
     @Override
     public Object getUpdate(IObserver obj) {
         return this;
+    }
+
+
+    public Card getRecentCard() {
+        return recentCard;
+    }
+
+    public int getRecentCardPlayerNum() {
+        return recentCardPlayerNum;
     }
 }

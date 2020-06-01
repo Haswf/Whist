@@ -18,14 +18,36 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
     private Trick model;
     private IObservable topic;
     private Hand info;
+    private HashMap<Integer, HashMap<Whist.Suit, Boolean>> player_suits;
+    private HashMap<Whist.Suit, Boolean> nest;
 
-    public NPC(int playerNumber, Hand hand, Trick model){
+    public NPC(int playerNumber, Hand hand, Trick model, int numPlayers){
         this.playerNumber = playerNumber;
         this.hand = hand;
         this.model = model;
         // setting topic = Trick
         setSubject(model);
         topic.register(this);
+
+        player_suits = new HashMap<>();
+        for(int i=0; i < numPlayers; i++){
+            nest = new HashMap<>();
+            for(int j=0; j < 4; j++){
+                if(j == 0){
+                    nest.put(Whist.Suit.HEARTS, true);
+                }
+                else if(j == 1){
+                    nest.put(Whist.Suit.DIAMONDS, true);
+                }
+                else if(j == 2){
+                    nest.put(Whist.Suit.SPADES, true);
+                }
+                else {
+                    nest.put(Whist.Suit.CLUBS, true);
+                }
+            }
+            player_suits.put(i, nest);
+        }
     }
 
     /**
@@ -52,6 +74,21 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
         this.info = trick.getCards();
         System.out.println("State of hand info:");
         System.out.println(info);
+
+        // if card played did not follow suit, update player suit map
+        Whist.Suit trumpSuit = (Whist.Suit) trick.getCards().getFirst().getSuit();
+        Whist.Suit recentCardSuit = (Whist.Suit) trick.getRecentCard().getSuit();
+
+        if(!recentCardSuit.equals(trumpSuit)){
+            System.out.println("Updating playerSuits");
+            System.out.println(trick.getRecentCard());
+            System.out.println(trick.getRecentCardPlayerNum());
+            nest = player_suits.get(trick.getRecentCardPlayerNum());
+            System.out.println(nest);
+            nest.put(trumpSuit, false);
+            System.out.println(nest);
+            System.out.println(player_suits);
+        }
     }
 
     @Override

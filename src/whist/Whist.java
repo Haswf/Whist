@@ -88,7 +88,7 @@ public class Whist extends CardGame {
 
         // Set up NPCs
         for (int i = 0; i < nbPlayers; i++){
-            npcs.add(new SmartNPC(i, hands[i], trick));
+            npcs.add(new SmartNPC(i, hands[i], trick, nbPlayers));
         }
     }
 
@@ -119,7 +119,7 @@ public class Whist extends CardGame {
                 selected = npcs.get(nextPlayer).selectCardLead();
             }
             Suit lead = (Suit) selected.getSuit();
-            trick.transfer(selected);
+            trick.transfer(selected, nextPlayer);
             winner = nextPlayer;
             winningCard = selected;
 
@@ -140,7 +140,7 @@ public class Whist extends CardGame {
                     selected = npcs.get(nextPlayer).selectCardFollow(lead, winningCard, trumps);
                 }
 
-                trick.transfer(selected);
+                trick.transfer(selected, nextPlayer);
                 selected.setVerso(false);  // In case it is upside down
 
                 // transfer to trick (includes graphic effect)

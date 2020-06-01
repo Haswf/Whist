@@ -7,8 +7,8 @@ import whist.interfaces.IObservable;
 public class SmartNPC extends NPC {
 
     private Card selected;
-    public SmartNPC(int playerNumber, Hand hand, Trick model){
-        super(playerNumber, hand, model);
+    public SmartNPC(int playerNumber, Hand hand, Trick model, int numPlayers){
+        super(playerNumber, hand, model, numPlayers);
     }
 
     @Override
