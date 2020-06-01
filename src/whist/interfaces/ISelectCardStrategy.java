@@ -1,11 +1,10 @@
 package whist.interfaces;
 
 import ch.aplu.jcardgame.Card;
-import whist.Whist;
-
+import whist.CardUtil.Suit;
 public interface ISelectCardStrategy {
 
     Card selectCardLead();
 
-    Card selectCardFollow(Whist.Suit lead, Card winningCard, Whist.Suit trump);
+    Card selectCardFollow(Suit lead, Card winningCard, Suit trump);
 }

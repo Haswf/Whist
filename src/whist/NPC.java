@@ -2,46 +2,45 @@ package whist;
 
 import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
+import whist.CardUtil.Suit;
 import whist.interfaces.IObservable;
 import whist.interfaces.IObserver;
 import whist.interfaces.ISelectCardStrategy;
 import whist.interfaces.ITrickModel;
 import whist.model.TrickModel;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class NPC implements ISelectCardStrategy, IObserver {
 
-    private int playerNumber;
+    private final int playerNumber;
     private Hand hand;
 
     private IObservable topic;
     private Hand info;
-    private HashMap<Integer, HashMap<Whist.Suit, Boolean>> player_suits;
-    private HashMap<Whist.Suit, Boolean> nest;
+    private final HashMap<Integer, HashMap<CardUtil.Suit, Boolean>> player_suits;
+    private HashMap<Suit, Boolean> nest;
 
-    public NPC(int playerNumber, ITrickModel model, int numPlayers){
+    public NPC(int playerNumber, ITrickModel model, int numPlayers) {
         this.playerNumber = playerNumber;
         setSubject(model);
         // setting topic = Trick
         topic.register(this);
 
         player_suits = new HashMap<>();
-        for(int i=0; i < numPlayers; i++){
+        for (int i = 0; i < numPlayers; i++) {
             nest = new HashMap<>();
-            for(int j=0; j < 4; j++){
-                if(j == 0){
-                    nest.put(Whist.Suit.HEARTS, true);
-                }
-                else if(j == 1){
-                    nest.put(Whist.Suit.DIAMONDS, true);
-                }
-                else if(j == 2){
-                    nest.put(Whist.Suit.SPADES, true);
-                }
-                else {
-                    nest.put(Whist.Suit.CLUBS, true);
+            for (int j = 0; j < 4; j++) {
+                if (j == 0) {
+                    nest.put(Suit.HEARTS, true);
+                } else if (j == 1) {
+                    nest.put(Suit.DIAMONDS, true);
+                } else if (j == 2) {
+                    nest.put(Suit.SPADES, true);
+                } else {
+                    nest.put(Suit.CLUBS, true);
                 }
             }
             player_suits.put(i, nest);
@@ -57,16 +56,16 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
 
     /**
      * Concrete whist.NPC wil implement strategy
+     *
      * @param lead
      * @return
      */
-    @Override
-    public abstract Card selectCardFollow(Whist.Suit lead, Card winningCard, Whist.Suit trump);
+    public abstract Card selectCardFollow(Suit lead, Card winningCard, Suit trump);
 
     @Override
     public void update() {
         // get access to the trick
-        TrickModel trickModel = (TrickModel)topic.getUpdate(this);
+        TrickModel trickModel = (TrickModel) topic.getUpdate(this);
 
         // store current state of the hand
         this.info = trickModel.getCards();
@@ -74,10 +73,10 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
         //System.out.println(info);
 
         // if card played did not follow suit, update player suit map
-        Whist.Suit trumpSuit = (Whist.Suit) trickModel.getCards().getFirst().getSuit();
-        Whist.Suit recentCardSuit = (Whist.Suit) trickModel.getRecentCard().getSuit();
+        Suit trumpSuit = (Suit) trickModel.getCards().getFirst().getSuit();
+        Suit recentCardSuit = (Suit) trickModel.getRecentCard().getSuit();
 
-        if(!recentCardSuit.equals(trumpSuit)){
+        if (!recentCardSuit.equals(trumpSuit)) {
             //System.out.println("Updating playerSuits");
             //System.out.println(trick.getRecentCard());
             //System.out.println(trick.getRecentCardPlayerNum());

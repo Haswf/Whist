@@ -3,22 +3,22 @@ package whist.view;
 import ch.aplu.jcardgame.RowLayout;
 import ch.aplu.jgamegrid.GameGrid;
 import ch.aplu.jgamegrid.Location;
-import whist.controller.TrickController;
-import whist.interfaces.ITrickModel;
-import whist.model.TrickModel;
 import whist.Whist;
-import whist.interfaces.IObserver;
+import whist.controller.TrickController;
 import whist.interfaces.IObservable;
+import whist.interfaces.IObserver;
+import whist.interfaces.ITrickModel;
 import whist.interfaces.IView;
 
 public class TrickView implements IView, IObserver {
-    private boolean isHidden;
-    private TrickController controller;
-    private ITrickModel model;
+    public static final Location hideLocation = new Location(-500, -500);
+    public static final Location trickLocation = new Location(350, 350);
+    private final boolean isHidden;
     private IObservable topic;
-    public final Location hideLocation = new Location(-500, - 500);
-    public final Location trickLocation = new Location(350, 350);
+    private final TrickController controller;
+    private final ITrickModel model;
     public final int trickWidth = 40;
+
 
     public TrickView(TrickController trickController, ITrickModel model) {
         this.isHidden = false;

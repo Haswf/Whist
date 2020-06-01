@@ -1,8 +1,8 @@
 package whist.model;
 
 import whist.Whist;
-import whist.interfaces.IObserver;
 import whist.interfaces.IObservable;
+import whist.interfaces.IObserver;
 import whist.interfaces.IScoreboardModel;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.Map;
 public class ScoreboardModel implements IScoreboardModel, IObservable {
     private final Map<Integer, Integer> scores;
     private boolean changed;
-    private List<IObserver> observers;
+    private final List<IObserver> observers;
 
     public ScoreboardModel() {
         this.scores = new HashMap<>();
@@ -38,7 +38,7 @@ public class ScoreboardModel implements IScoreboardModel, IObservable {
 
     public void initialise() {
         // Notify the observers once scoreboard has been initialised
-        for (int player=0; player< Whist.getInstance().nbPlayers; player++) {
+        for (int player = 0; player < Whist.getInstance().nbPlayers; player++) {
             this.scores.put(player, 0);
         }
     }

@@ -1,28 +1,28 @@
 package whist.view;
 
-import ch.aplu.jcardgame.Hand;
-import ch.aplu.jcardgame.RowLayout;
-import ch.aplu.jcardgame.TargetArea;
+import ch.aplu.jcardgame.*;
 import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.Location;
-import whist.interfaces.IController;
-import whist.interfaces.IView;
+import whist.CardUtil;
 import whist.Whist;
+import whist.controller.WhistController;
+import whist.interfaces.IView;
+import whist.interfaces.IWhistModel;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 
 public class WhistView implements IView {
-    final String trumpImage[] = {"bigspade.gif","bigheart.gif","bigdiamond.gif","bigclub.gif"};
-    private Object topic;
+    final String[] trumpImage = {"bigspade.gif", "bigheart.gif", "bigdiamond.gif", "bigclub.gif"};
     Actor trumpsActor;
-    public final Location trickLocation = new Location(350, 350);
-    private Map<Integer, RowLayout> layouts;
-    private Location trumpsActorLocation = new Location(50, 50);
-    private IController controller;
+    private final Map<Integer, RowLayout> layouts;
+    private final Location trumpsActorLocation = new Location(50, 50);
+    private final WhistController controller;
+
     private final int handWidth = 400;
+    private final IWhistModel model;
+
     private final Location[] handLocations = {
             new Location(350, 625),
             new Location(75, 350),
@@ -31,40 +31,76 @@ public class WhistView implements IView {
     };
 
     private final Location textLocation = new Location(350, 450);
-    private Whist model;
+    private Card selected;
 
-    public WhistView(IController controller, Whist model) {
+    public WhistView(WhistController controller, IWhistModel model) {
         this.controller = controller;
         this.model = model;
         this.layouts = new HashMap<>();
-        model.setTitle("Whist (V" + model.version + ") Constructed for UofM SWEN30006 with JGameGrid (www.aplu.ch)");
-        createView();
+        Whist.getInstance().setTitle("whist.Whist (V" + Whist.getInstance().version + ") Constructed for UofM SWEN30006 with JGameGrid (www.aplu.ch)");
     }
 
-    public void bindLayout(Hand hand, int player) {
-        hand.setView(model, layouts.get(player));
-        hand.setTargetArea(new TargetArea(trickLocation));
-        hand.draw();
+    public Card getSelected() {
+        return selected;
     }
 
-    public void createView() {
-        for (int i = 0; i < model.nbPlayers; i++) {
+    public void setSelected(Card selected) {
+        this.selected = selected;
+    }
+
+    public void setListener() {
+        // Set up human player for interaction
+        CardListener cardListener = new CardAdapter()  // Human Player plays card
+        {
+            public void leftDoubleClicked(Card card) {
+                selected = card;
+                model.getHands()[0].setTouchEnabled(false);
+            }
+        };
+        model.getHands()[0].addCardListener(cardListener);
+    }
+
+    public Map<Integer, RowLayout> getLayouts() {
+        return layouts;
+    }
+
+    public void initialise() {
+        for (int i = 0; i < Whist.getInstance().nbPlayers; i++) {
+            model.getNpcs().get(i).setHand(model.getHands()[i]);
+            Hand hand = model.getHands()[i];
+            hand.setView(Whist.getInstance(), layouts.get(i));
+            hand.setTargetArea(new TargetArea(TrickView.trickLocation));
+            hand.sort(Hand.SortType.SUITPRIORITY, true);
+            hand.draw();
+        }
+    }
+
+    public void createLayout() {
+        for (int i = 0; i < Whist.getInstance().nbPlayers; i++) {
             RowLayout playerLayout = new RowLayout(handLocations[i], handWidth);
             playerLayout.setRotationAngle(90 * i);
             layouts.put(i, playerLayout);
         }
     }
 
-    public void onGameOver(Optional<Integer> winner) {
-        model.addActor(new Actor("sprites/gameover.gif"), textLocation);
-        model.setStatusText("Game over. Winner is player: " + winner.get());
-        model.refresh();
+    public void createView() {
+        Whist.getInstance().setStatusText("Initializing...");
+        createLayout();
+        initialise();
     }
-    public void showTrump(Whist.Suit trumps) {
-        this.trumpsActor = new Actor("sprites/"+trumpImage[trumps.ordinal()]);
-        model.addActor(trumpsActor, trumpsActorLocation);
+
+    public void onGameOver(int winner) {
+        Whist.getInstance().addActor(new Actor("sprites/gameover.gif"), textLocation);
+        Whist.getInstance().setStatusText("Game over. Winner is player: " + winner);
+        Whist.getInstance().refresh();
     }
+
+    public void showTrump(CardUtil.Suit trumps) {
+        this.trumpsActor = new Actor("sprites/" + trumpImage[trumps.ordinal()]);
+        Whist.getInstance().addActor(trumpsActor, trumpsActorLocation);
+    }
+
     public void clearTrump() {
-        model.removeActor(trumpsActor);
+        Whist.getInstance().removeActor(trumpsActor);
     }
 }

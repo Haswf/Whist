@@ -5,7 +5,7 @@ import whist.interfaces.INPCState;
 
 public class FollowStateLegal implements INPCState {
     @Override
-    public Card selectCard(NPC npc, Whist.Suit lead) {
+    public Card selectCard(NPC npc, CardUtil.Suit lead) {
         // play random legal card
 //        npc.selectRandomCard(lead);
         return null;

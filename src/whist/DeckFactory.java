@@ -20,6 +20,6 @@ public class DeckFactory {
     }
 
     public Deck createStandardDeck() {
-        return new Deck(Whist.Suit.values(), Whist.Rank.values(), "cover");
+        return new Deck(CardUtil.Suit.values(), CardUtil.Rank.values(), "cover");
     }
 }
