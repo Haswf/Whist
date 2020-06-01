@@ -6,14 +6,13 @@ import ch.aplu.jgamegrid.Location;
 import whist.CardUtil;
 import whist.Whist;
 import whist.controller.WhistController;
-import whist.interfaces.IView;
 import whist.interfaces.IWhistModel;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class WhistView implements IView {
+public class WhistView {
     final String[] trumpImage = {"bigspade.gif", "bigheart.gif", "bigdiamond.gif", "bigclub.gif"};
     Actor trumpsActor;
     private final Map<Integer, RowLayout> layouts;
@@ -46,6 +45,14 @@ public class WhistView implements IView {
 
     public void setSelected(Card selected) {
         this.selected = selected;
+    }
+
+    public void selectCard() {
+        model.getHands()[0].setTouchEnabled(true);
+        Whist.getInstance().setStatusText("Player 0 double-click on card to follow.");
+        while (null == selected) {
+            Whist.getInstance().delay(100);
+        }
     }
 
     public void setListener() {

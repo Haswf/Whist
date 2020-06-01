@@ -26,11 +26,10 @@ public class WhistController {
         this.view = new WhistView(this, model);
         scoreboardController = new ScoreboardController(new ScoreboardModel());
         trickController = new TrickController(new TrickModel());
-        initialise();
     }
 
     public void initialise() {
-        model.initialise();
+        model.dealingOut();
         createNPC();
         view.setListener();
         view.createView();
@@ -63,14 +62,10 @@ public class WhistController {
         int nextPlayer = random.nextInt(model.getNbPlayers());
 
         // until all cards have been played
-        for (int i = 0; i < model.getNbPlayers(); i++) {
+        for (int i = 0; i < model.getNbStartCards(); i++) {
 
             if (0 == nextPlayer) {  // Select lead depending on player type
-                model.getHands()[0].setTouchEnabled(true);
-                Whist.getInstance().setStatusText("Player 0 double-click on card to lead.");
-                while (null == view.getSelected()) {
-                    GameGrid.delay(100);
-                }
+                view.selectCard();
                 selected = view.getSelected();
             }
             // npc
@@ -91,11 +86,7 @@ public class WhistController {
                     nextPlayer = 0;  // From last back to first
                 }
                 if (0 == nextPlayer) {
-                    model.getHands()[0].setTouchEnabled(true);
-                    Whist.getInstance().setStatusText("Player 0 double-click on card to follow.");
-                    while (null == view.getSelected()) {
-                        Whist.getInstance().delay(100);
-                    }
+                    view.selectCard();
                     selected = view.getSelected();
                 } else {
                     Whist.getInstance().setStatusText("Player " + nextPlayer + " thinking...");

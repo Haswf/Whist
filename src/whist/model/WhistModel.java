@@ -41,7 +41,7 @@ public class WhistModel implements IWhistModel {
     }
 
     @Override
-    public void initialise() {
+    public void dealingOut() {
         hands = deck.dealingOut(nbPlayers, nbStartCards); // Last element of hands is leftover cards; these are ignored
     }
 

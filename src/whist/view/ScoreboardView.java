@@ -9,14 +9,13 @@ import whist.controller.ScoreboardController;
 import whist.interfaces.IObservable;
 import whist.interfaces.IObserver;
 import whist.interfaces.IScoreboardModel;
-import whist.interfaces.IView;
 
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class ScoreboardView implements IView, IObserver { /*
+public class ScoreboardView implements IObserver { /*
     TODO: View should hold reference to the game.
      */
     private IObservable topic;

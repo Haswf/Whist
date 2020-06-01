@@ -16,7 +16,7 @@ public interface IWhistModel {
 
     List<NPC> getNpcs();
 
-    void initialise();
-
     void resetNPC();
+
+    void dealingOut();
 }

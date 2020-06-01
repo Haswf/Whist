@@ -8,9 +8,8 @@ import whist.controller.TrickController;
 import whist.interfaces.IObservable;
 import whist.interfaces.IObserver;
 import whist.interfaces.ITrickModel;
-import whist.interfaces.IView;
 
-public class TrickView implements IView, IObserver {
+public class TrickView implements IObserver {
     public static final Location hideLocation = new Location(-500, -500);
     public static final Location trickLocation = new Location(350, 350);
     private final boolean isHidden;
