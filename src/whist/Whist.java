@@ -104,7 +104,7 @@ public class Whist extends CardGame {
 
         // until all cards have been played
         for (int i = 0; i < nbStartCards; i++) {
-            trick = new Trick();
+            //trick = new Trick();
             trickView = new TrickView(this, trick);
             selected = null;
             if (0 == nextPlayer) {  // Select lead depending on player type
@@ -156,8 +156,11 @@ public class Whist extends CardGame {
                 }
                 // End Follow
             }
-            System.out.printf("End of trick\n");
-            trick.setHidden(true);
+            System.out.println("End of trick");
+            // reset Trick hand
+            trick.getCards().removeAll(true);
+            System.out.println(trick.getCards());
+            //trick.setHidden(true);
 
             nextPlayer = winner;
             setStatusText("Player " + nextPlayer + " wins trick.");

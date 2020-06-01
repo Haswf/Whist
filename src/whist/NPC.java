@@ -49,7 +49,9 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
         Trick trick = (Trick)topic.getUpdate(this);
 
         // store current state of the hand
-        this.hand = trick.getCards();
+        this.info = trick.getCards();
+        System.out.println("State of hand info:");
+        System.out.println(info);
     }
 
     @Override
