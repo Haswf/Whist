@@ -1,12 +1,14 @@
 package whist;
 
 import ch.aplu.jcardgame.*;
+import whist.controller.ScoreboardController;
 import whist.controller.WhistController;
+import whist.interfaces.IScoreboardModel;
+import whist.model.ScoreboardModel;
 import whist.view.ScoreboardView;
 import whist.view.TrickView;
 import whist.view.WhistView;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,8 +17,20 @@ import java.util.concurrent.ThreadLocalRandom;
 
 // MOVE NPC INSTANTIATION TO WHIST CONSTRUCTOR
 public class Whist extends CardGame {
-    private Scoreboard scoreboard;
-    private ScoreboardView scoreboardView;
+
+    private volatile static Whist uniqueInstance;
+
+    public static Whist getInstance() {
+        if (uniqueInstance == null) {
+            synchronized (Whist.class) {
+                if (uniqueInstance == null) {
+                    uniqueInstance = new Whist();
+                }
+            }
+        }
+        return uniqueInstance;
+    }
+    ScoreboardController scoreboardController;
     private WhistView whistView;
     private Trick trick;
     private TrickView trickView;
@@ -119,9 +133,6 @@ public class Whist extends CardGame {
             winner = nextPlayer;
             winningCard = selected;
 
-            // Notify observers of card played
-
-
             // End Lead
             for (int j = 1; j < nbPlayers; j++) {
                 if (++nextPlayer >= nbPlayers) nextPlayer = 0;  // From last back to first
@@ -160,9 +171,9 @@ public class Whist extends CardGame {
             //trick.setHidden(true);
 
             nextPlayer = winner;
+            scoreboardController.inc(winner);
             setStatusText("Player " + nextPlayer + " wins trick.");
-            scoreboard.updateScore(nextPlayer, scoreboard.getScoreByPlayer(nextPlayer) + 1);
-            if (winningScore == scoreboard.getScoreByPlayer(nextPlayer)) {
+            if (winningScore == scoreboardController.get(nextPlayer)) {
                 return Optional.of(nextPlayer);
             }
 
@@ -171,10 +182,13 @@ public class Whist extends CardGame {
         return Optional.empty();
     }
 
-    public Whist() {
+    private Whist() {
         super(700, 700, 30);
-        scoreboard = new Scoreboard(nbPlayers);
-        scoreboardView = new ScoreboardView(null, scoreboard, this);
+
+    }
+
+    private void run() {
+        this.scoreboardController = new ScoreboardController(new ScoreboardModel());
         whistView = new WhistView(new WhistController(), this);
         trick = new Trick();
         trickView = new TrickView(this, trick);
@@ -197,7 +211,7 @@ public class Whist extends CardGame {
 
     public static void main(String[] args) {
         // System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        new Whist();
+       Whist.getInstance().run();
     }
 
 

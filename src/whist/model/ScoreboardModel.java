@@ -1,42 +1,44 @@
-package whist;
+package whist.model;
 
+import whist.Whist;
 import whist.interfaces.IObserver;
 import whist.interfaces.IObservable;
+import whist.interfaces.IScoreboardModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Scoreboard implements IObservable {
+public class ScoreboardModel implements IScoreboardModel, IObservable {
     private final Map<Integer, Integer> scores;
     private boolean changed;
-    private int nbPlayers;
     private List<IObserver> observers;
 
-    public Scoreboard(int nbPlayers) {
-        this.nbPlayers = nbPlayers;
+    public ScoreboardModel() {
         this.scores = new HashMap<>();
         this.observers = new ArrayList<>();
-        initScores();
     }
 
-    public void updateScore(int player, int score) {
+    public void put(int player, int score) {
         scores.put(player, score);
         this.changed = true;
         notifyObservers();
     }
 
-    public int getScoreByPlayer(int player) {
+    public int get(int player) {
         return this.scores.get(player);
     }
 
-    private void initScores() {
-        for (int player=0; player<nbPlayers; player++) {
+    public Map<Integer, Integer> getScores() {
+        return scores;
+    }
+
+    public void initialise() {
+        // Notify the observers once scoreboard has been initialised
+        for (int player=0; player< Whist.getInstance().nbPlayers; player++) {
             this.scores.put(player, 0);
         }
-        // Notify the observers once scoreboard has been initialised
-        notifyObservers();
     }
 
     @Override

@@ -4,25 +4,22 @@ import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.Location;
 import ch.aplu.jgamegrid.TextActor;
 import whist.FontSingleton;
-import whist.Scoreboard;
+import whist.controller.ScoreboardController;
+import whist.interfaces.*;
+import whist.model.ScoreboardModel;
 import whist.Whist;
-import whist.interfaces.IController;
-import whist.interfaces.IObserver;
-import whist.interfaces.IObservable;
-import whist.interfaces.IView;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
-public class ScoreboardView implements IView, IObserver {
-    private IObservable topic;
-    /*
+public class ScoreboardView implements IView, IObserver { /*
     TODO: View should hold reference to the game.
      */
-    private Whist game;
-    private Scoreboard model;
-    private IController controller;
+    private IObservable topic;
+    private IScoreboardModel model;
+    private ScoreboardController controller;
     private final Location[] scoreLocations = {
             new Location(575, 675),
             new Location(25, 575),
@@ -31,37 +28,42 @@ public class ScoreboardView implements IView, IObserver {
     };
     private Map<Integer, Actor> scoreActors;
 
-    public ScoreboardView(IController controller, Scoreboard model, Whist game) {
+
+    public ScoreboardView(ScoreboardController controller, IScoreboardModel model) {
         this.scoreActors = new HashMap<>();
         this.model = model;
         this.controller = controller;
-        this.game = game;
         createView();
         model.register(this);
         setSubject(model);
     }
 
     public void createView() {
-        for (int player=0; player<game.nbPlayers; player++) {
-            scoreActors.put(player, new TextActor("0", Color.WHITE, game.bgColor, FontSingleton.getInstance().getBigFont()));
-            game.addActor(scoreActors.get(player), scoreLocations[player]);
+        for (int player=0; player<Whist.getInstance().nbPlayers; player++) {
+            scoreActors.put(player, new TextActor("0", Color.WHITE, Whist.getInstance().bgColor, FontSingleton.getInstance().getBigFont()));
+            Whist.getInstance().addActor(scoreActors.get(player), scoreLocations[player]);
         }
     }
 
     @Override
     public void update() {
-        HashMap<Integer, Integer> newScore = (HashMap<Integer, Integer>) topic.getUpdate(this);
-        for (Integer player : newScore.keySet()) {
+        Iterator<Map.Entry<Integer, Integer>> it = ((IScoreboardModel)topic).getScores().entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<Integer, Integer> pair = it.next();
+            int player = pair.getKey();
+            int score = pair.getValue();
             if (scoreActors.containsKey(player)) {
-                game.removeActor(scoreActors.get(player));
+                Whist.getInstance().removeActor(scoreActors.get(player));
             }
-            scoreActors.put(player, new TextActor(String.valueOf(newScore.get(player)), Color.WHITE, game.bgColor, FontSingleton.getInstance().getBigFont()));
-            game.addActor(scoreActors.get(player), scoreLocations[player]);
+            scoreActors.put(player, new TextActor(String.valueOf(score), Color.WHITE, Whist.getInstance().bgColor, FontSingleton.getInstance().getBigFont()));
+            Whist.getInstance().addActor(scoreActors.get(player), scoreLocations[player]);
+            it.remove(); // avoids a ConcurrentModificationException
         }
     }
 
     @Override
     public void setSubject(IObservable subject) {
-        this.topic=subject;
+        this.topic = subject;
     }
+
 }
