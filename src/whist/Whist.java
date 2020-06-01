@@ -73,7 +73,7 @@ public class Whist extends CardGame {
             // TODO: Wrong delegation, model shouldn't know anything about view
             whistView.bindLayout(hands[i], i);
             hands[i].sort(Hand.SortType.SUITPRIORITY, true);
-
+            npcs.get(i).setHand(hands[i]);
         }
 
         // Set up human player for interaction
@@ -86,10 +86,6 @@ public class Whist extends CardGame {
         };
         hands[0].addCardListener(cardListener);
 
-        // Set up NPCs
-        for (int i = 0; i < nbPlayers; i++){
-            npcs.add(new SmartNPC(i, hands[i], trick, nbPlayers));
-        }
     }
 
     private Optional<Integer> playRound() {  // Returns winner, if any
@@ -160,6 +156,7 @@ public class Whist extends CardGame {
             // reset Trick hand
             trick.getCards().removeAll(true);
             System.out.println(trick.getCards());
+
             //trick.setHidden(true);
 
             nextPlayer = winner;
@@ -182,11 +179,19 @@ public class Whist extends CardGame {
         trick = new Trick();
         trickView = new TrickView(this, trick);
         npcs = new ArrayList<>();
+        // Set up NPCs
+        for (int i = 0; i < nbPlayers; i++){
+            npcs.add(new SmartNPC(i, trick, nbPlayers));
+        }
         setStatusText("Initializing...");
         Optional<Integer> winner;
         do {
             initRound();
             winner = playRound();
+            // reset npc hands
+            for (int k = 0; k < nbPlayers; k++){
+                npcs.get(k).getHand().removeAll(true);
+            }
         } while (!winner.isPresent());
     }
 

@@ -7,8 +7,8 @@ import ch.aplu.jcardgame.Hand;
 public class LegalNPC extends NPC{
 
     private Card selected;
-    public LegalNPC(int playerNumber, Hand hand, Trick model, int numPlayers){
-        super(playerNumber, hand, model, numPlayers);
+    public LegalNPC(int playerNumber, Trick model, int numPlayers){
+        super(playerNumber, model, numPlayers);
     }
 
     @Override

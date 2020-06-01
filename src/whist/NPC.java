@@ -9,7 +9,6 @@ import whist.interfaces.ISelectCardStrategy;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-// Need to register NPCs as observers to Trick
 public abstract class NPC implements ISelectCardStrategy, IObserver {
 
     private int playerNumber;
@@ -21,9 +20,8 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
     private HashMap<Integer, HashMap<Whist.Suit, Boolean>> player_suits;
     private HashMap<Whist.Suit, Boolean> nest;
 
-    public NPC(int playerNumber, Hand hand, Trick model, int numPlayers){
+    public NPC(int playerNumber, Trick model, int numPlayers){
         this.playerNumber = playerNumber;
-        this.hand = hand;
         this.model = model;
         // setting topic = Trick
         setSubject(model);
@@ -103,6 +101,10 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
 
     public Hand getHand() {
         return hand;
+    }
+
+    public void setHand(Hand hand) {
+        this.hand = hand;
     }
 
     // return random Card from Hand
