@@ -11,4 +11,9 @@ public interface ITrickModel extends IObservable {
     void transfer(Card selected, int playerNum);
 
     void clear();
+
+    Card getRecentCard();
+
+    int getRecentCardPlayerNum();
+
 }

@@ -3,8 +3,8 @@ package whist.model;
 import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
 import whist.DeckFactory;
-import whist.interfaces.IObserver;
 import whist.interfaces.IObservable;
+import whist.interfaces.IObserver;
 import whist.interfaces.ITrickModel;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class TrickModel implements IObservable, ITrickModel {
     private Card recentCard;
     private int recentCardPlayerNum;
     private boolean changed;
-    private List<IObserver> observers;
+    private final List<IObserver> observers;
 
     public TrickModel() {
         this.cards = new Hand(DeckFactory.getInstance().createStandardDeck());
@@ -36,11 +36,11 @@ public class TrickModel implements IObservable, ITrickModel {
 
     @Override
     public void transfer(Card selected, int playerNum) {
+        notifyObservers();
         selected.transfer(this.cards, true);
         this.recentCard = selected;
         this.recentCardPlayerNum = playerNum;
         changed = true;
-        notifyObservers();
     }
 
     @Override

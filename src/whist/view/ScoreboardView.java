@@ -6,7 +6,6 @@ import ch.aplu.jgamegrid.TextActor;
 import whist.FontSingleton;
 import whist.Whist;
 import whist.controller.ScoreboardController;
-import whist.interfaces.IObservable;
 import whist.interfaces.IObserver;
 import whist.interfaces.IScoreboardModel;
 
@@ -17,7 +16,6 @@ import java.util.Map;
 
 public class ScoreboardView implements IObserver { /*
      */
-    private IObservable topic;
     private final IScoreboardModel model;
     private final ScoreboardController controller;
     private final Location[] scoreLocations = {
@@ -46,7 +44,7 @@ public class ScoreboardView implements IObserver { /*
 
     @Override
     public void update() {
-        Iterator<Map.Entry<Integer, Integer>> it = ((IScoreboardModel)topic).getScores().entrySet().iterator();
+        Iterator<Map.Entry<Integer, Integer>> it = model.getScores().entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<Integer, Integer> pair = it.next();
             int player = pair.getKey();
