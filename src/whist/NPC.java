@@ -25,9 +25,8 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
 
     public NPC(int playerNumber, ITrickModel model, int numPlayers) {
         this.playerNumber = playerNumber;
-        setSubject(model);
         // setting topic = Trick
-        topic.register(this);
+        model.register(this);
 
         player_suits = new HashMap<>();
         for (int i = 0; i < numPlayers; i++) {
@@ -87,13 +86,6 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
             //System.out.println(player_suits);
         }
     }
-
-    @Override
-    public void setSubject(IObservable subject) {
-        this.topic = subject;
-    }
-
-
     public int getPlayerNumber() {
         return playerNumber;
     }

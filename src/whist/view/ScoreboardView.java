@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ScoreboardView implements IObserver { /*
-    TODO: View should hold reference to the game.
      */
     private IObservable topic;
     private final IScoreboardModel model;
@@ -36,7 +35,6 @@ public class ScoreboardView implements IObserver { /*
         this.controller = controller;
         createView();
         model.register(this);
-        setSubject(model);
     }
 
     public void createView() {
@@ -59,11 +57,6 @@ public class ScoreboardView implements IObserver { /*
             scoreActors.put(player, new TextActor(String.valueOf(score), Color.WHITE, Whist.getInstance().bgColor, FontSingleton.getInstance().getBigFont()));
             Whist.getInstance().addActor(scoreActors.get(player), scoreLocations[player]);
         }
-    }
-
-    @Override
-    public void setSubject(IObservable subject) {
-        this.topic = subject;
     }
 
 }

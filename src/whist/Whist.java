@@ -44,7 +44,7 @@ public class Whist extends CardGame {
             winner = whistController.playRound();
             whistController.resetNPC();
         } while (!winner.isPresent());
-        whistController.gameover(winner.get());
+        whistController.gameOver(winner.get());
 
     }
 

@@ -45,7 +45,7 @@ public class WhistController {
         }
     }
 
-    public void gameover(int winner) {
+    public void gameOver(int winner) {
         view.onGameOver(winner);
     }
 
