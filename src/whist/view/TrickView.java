@@ -1,52 +1,46 @@
 package whist.view;
 
 import ch.aplu.jcardgame.RowLayout;
+import ch.aplu.jgamegrid.GameGrid;
 import ch.aplu.jgamegrid.Location;
-import whist.Trick;
+import whist.controller.TrickController;
+import whist.interfaces.ITrickModel;
+import whist.model.TrickModel;
 import whist.Whist;
 import whist.interfaces.IObserver;
 import whist.interfaces.IObservable;
 import whist.interfaces.IView;
 
 public class TrickView implements IView, IObserver {
-    private Whist game;
-    private Trick model;
+    private boolean isHidden;
+    private TrickController controller;
+    private ITrickModel model;
     private IObservable topic;
     public final Location hideLocation = new Location(-500, - 500);
     public final Location trickLocation = new Location(350, 350);
     public final int trickWidth = 40;
 
-    public TrickView(Whist game, Trick model) {
-        this.game = game;
+    public TrickView(TrickController trickController, ITrickModel model) {
+        this.isHidden = false;
+        this.controller = trickController;
         this.model = model;
         setSubject(model);
         topic.register(this);
     }
-    public void clearTrick() {
-        this.model.cards.setView(game, new RowLayout(hideLocation, 0));
-        this.model.cards.draw();
+
+    public void clear() {
+        GameGrid.delay(600);
+        this.model.getCards().setView(Whist.getInstance(), new RowLayout(hideLocation, 0));
     }
 
     @Override
     public void update() {
-        Trick trick = (Trick)topic.getUpdate(this);
-        if (trick.isHidden) {
-            game.delay(600);
-            clearTrick();
-        } else {
-            showTrick();
-        }
+        this.model.getCards().setView(Whist.getInstance(), new RowLayout(trickLocation, (this.model.getCards().getNumberOfCards()+2)*trickWidth));
+        this.model.getCards().draw();
     }
 
     @Override
     public void setSubject(IObservable subject) {
         this.topic = subject;
     }
-
-    public void showTrick() {
-        // Follow with selected card
-        this.model.cards.setView(game, new RowLayout(trickLocation, (this.model.cards.getNumberOfCards()+2)*trickWidth));
-        this.model.cards.draw();
-    }
-
 }

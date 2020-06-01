@@ -2,10 +2,10 @@ package whist;
 
 import ch.aplu.jcardgame.*;
 import whist.controller.ScoreboardController;
+import whist.controller.TrickController;
 import whist.controller.WhistController;
-import whist.interfaces.IScoreboardModel;
 import whist.model.ScoreboardModel;
-import whist.view.ScoreboardView;
+import whist.model.TrickModel;
 import whist.view.TrickView;
 import whist.view.WhistView;
 
@@ -20,21 +20,11 @@ public class Whist extends CardGame {
 
     private volatile static Whist uniqueInstance;
 
-    public static Whist getInstance() {
-        if (uniqueInstance == null) {
-            synchronized (Whist.class) {
-                if (uniqueInstance == null) {
-                    uniqueInstance = new Whist();
-                }
-            }
-        }
-        return uniqueInstance;
-    }
     ScoreboardController scoreboardController;
+    TrickController trickController;
     private WhistView whistView;
-    private Trick trick;
-    private TrickView trickView;
     private ArrayList<NPC> npcs;
+    static final Random random = ThreadLocalRandom.current();
 
     public enum Suit {
         SPADES, HEARTS, DIAMONDS, CLUBS
@@ -47,7 +37,17 @@ public class Whist extends CardGame {
     }
 
 
-    static final Random random = ThreadLocalRandom.current();
+    public static Whist getInstance() {
+        if (uniqueInstance == null) {
+            synchronized (Whist.class) {
+                if (uniqueInstance == null) {
+                    uniqueInstance = new Whist();
+                }
+            }
+        }
+        return uniqueInstance;
+    }
+
 
     // return random Enum value
     public static <T extends Enum<?>> T randomEnum(Class<T> clazz) {
@@ -114,9 +114,8 @@ public class Whist extends CardGame {
 
         // until all cards have been played
         for (int i = 0; i < nbStartCards; i++) {
-            //trick = new Trick();
-            trickView = new TrickView(this, trick);
             selected = null;
+
             if (0 == nextPlayer) {  // Select lead depending on player type
                 hands[0].setTouchEnabled(true);
                 setStatusText("Player 0 double-click on card to lead.");
@@ -129,7 +128,7 @@ public class Whist extends CardGame {
                 selected = npcs.get(nextPlayer).selectCardLead();
             }
             Suit lead = (Suit) selected.getSuit();
-            trick.transfer(selected, nextPlayer);
+            trickController.transfer(selected, nextPlayer);
             winner = nextPlayer;
             winningCard = selected;
 
@@ -147,7 +146,7 @@ public class Whist extends CardGame {
                     selected = npcs.get(nextPlayer).selectCardFollow(lead, winningCard, trumps);
                 }
 
-                trick.transfer(selected, nextPlayer);
+                trickController.transfer(selected, nextPlayer);
                 selected.setVerso(false);  // In case it is upside down
 
                 // transfer to trick (includes graphic effect)
@@ -165,12 +164,9 @@ public class Whist extends CardGame {
             }
             System.out.println("End of trick");
             // reset Trick hand
-            trick.getCards().removeAll(true);
-            System.out.println(trick.getCards());
-
-            //trick.setHidden(true);
-
+            System.out.println(trickController.getModel().getCards());
             nextPlayer = winner;
+            trickController.clear();
             scoreboardController.inc(winner);
             setStatusText("Player " + nextPlayer + " wins trick.");
             if (winningScore == scoreboardController.get(nextPlayer)) {
@@ -184,18 +180,16 @@ public class Whist extends CardGame {
 
     private Whist() {
         super(700, 700, 30);
-
     }
 
     private void run() {
-        this.scoreboardController = new ScoreboardController(new ScoreboardModel());
+        scoreboardController = new ScoreboardController(new ScoreboardModel());
         whistView = new WhistView(new WhistController(), this);
-        trick = new Trick();
-        trickView = new TrickView(this, trick);
+        trickController = new TrickController(new TrickModel());
         npcs = new ArrayList<>();
         // Set up NPCs
         for (int i = 0; i < nbPlayers; i++){
-            npcs.add(new SmartNPC(i, trick, nbPlayers));
+            npcs.add(new SmartNPC(i, trickController.getModel(), nbPlayers));
         }
         setStatusText("Initializing...");
         Optional<Integer> winner;

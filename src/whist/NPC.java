@@ -5,6 +5,8 @@ import ch.aplu.jcardgame.Hand;
 import whist.interfaces.IObservable;
 import whist.interfaces.IObserver;
 import whist.interfaces.ISelectCardStrategy;
+import whist.interfaces.ITrickModel;
+import whist.model.TrickModel;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -14,17 +16,15 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
     private int playerNumber;
     private Hand hand;
 
-    private Trick model;
     private IObservable topic;
     private Hand info;
     private HashMap<Integer, HashMap<Whist.Suit, Boolean>> player_suits;
     private HashMap<Whist.Suit, Boolean> nest;
 
-    public NPC(int playerNumber, Trick model, int numPlayers){
+    public NPC(int playerNumber, ITrickModel model, int numPlayers){
         this.playerNumber = playerNumber;
-        this.model = model;
-        // setting topic = Trick
         setSubject(model);
+        // setting topic = Trick
         topic.register(this);
 
         player_suits = new HashMap<>();
@@ -66,22 +66,22 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
     @Override
     public void update() {
         // get access to the trick
-        Trick trick = (Trick)topic.getUpdate(this);
+        TrickModel trickModel = (TrickModel)topic.getUpdate(this);
 
         // store current state of the hand
-        this.info = trick.getCards();
+        this.info = trickModel.getCards();
         //System.out.println("State of hand info:");
         //System.out.println(info);
 
         // if card played did not follow suit, update player suit map
-        Whist.Suit trumpSuit = (Whist.Suit) trick.getCards().getFirst().getSuit();
-        Whist.Suit recentCardSuit = (Whist.Suit) trick.getRecentCard().getSuit();
+        Whist.Suit trumpSuit = (Whist.Suit) trickModel.getCards().getFirst().getSuit();
+        Whist.Suit recentCardSuit = (Whist.Suit) trickModel.getRecentCard().getSuit();
 
         if(!recentCardSuit.equals(trumpSuit)){
             //System.out.println("Updating playerSuits");
             //System.out.println(trick.getRecentCard());
             //System.out.println(trick.getRecentCardPlayerNum());
-            nest = player_suits.get(trick.getRecentCardPlayerNum());
+            nest = player_suits.get(trickModel.getRecentCardPlayerNum());
             //System.out.println(nest);
             nest.put(trumpSuit, false);
             //System.out.println(nest);

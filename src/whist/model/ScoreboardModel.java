@@ -20,8 +20,10 @@ public class ScoreboardModel implements IScoreboardModel, IObservable {
         this.observers = new ArrayList<>();
     }
 
+
+
     public void put(int player, int score) {
-        scores.put(player, score);
+        this.scores.put(player, score);
         this.changed = true;
         notifyObservers();
     }

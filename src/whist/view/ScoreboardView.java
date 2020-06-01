@@ -57,7 +57,6 @@ public class ScoreboardView implements IView, IObserver { /*
             }
             scoreActors.put(player, new TextActor(String.valueOf(score), Color.WHITE, Whist.getInstance().bgColor, FontSingleton.getInstance().getBigFont()));
             Whist.getInstance().addActor(scoreActors.get(player), scoreLocations[player]);
-            it.remove(); // avoids a ConcurrentModificationException
         }
     }
 

@@ -61,7 +61,6 @@ public class WhistView implements IView {
         model.refresh();
     }
     public void showTrump(Whist.Suit trumps) {
-        // Select and display trump suit
         this.trumpsActor = new Actor("sprites/"+trumpImage[trumps.ordinal()]);
         model.addActor(trumpsActor, trumpsActorLocation);
     }

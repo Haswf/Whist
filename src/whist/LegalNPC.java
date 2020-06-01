@@ -1,13 +1,13 @@
 package whist;
 
 import ch.aplu.jcardgame.Card;
-import ch.aplu.jcardgame.Hand;
+import whist.model.TrickModel;
 
 
 public class LegalNPC extends NPC{
 
     private Card selected;
-    public LegalNPC(int playerNumber, Trick model, int numPlayers){
+    public LegalNPC(int playerNumber, TrickModel model, int numPlayers){
         super(playerNumber, model, numPlayers);
     }
 
