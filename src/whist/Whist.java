@@ -38,15 +38,18 @@ public class Whist extends CardGame {
     }
 
     public static void main(String[] args) {
-        System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        Whist.getInstance().readPropertiesFile();
+        String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        String configFile = "whist.properties";
+        if (args.length == 1) {
+            configFile = args[0];
+        }
+        String gameConfigPath = rootPath + configFile;
+        Whist.getInstance().readPropertiesFile(gameConfigPath);
         Whist.getInstance().run();
     }
 
-    public void readPropertiesFile() {
-        String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-        System.out.println(rootPath);
-        String gameConfigPath = rootPath + "original.properties";
+    public void readPropertiesFile(String gameConfigPath) {
+
         Properties props = new Properties();
         try {
             props.load(new FileInputStream(gameConfigPath));
