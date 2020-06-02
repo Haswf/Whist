@@ -70,7 +70,7 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
         //System.out.println(info);
 
         // if card played did not follow suit, update player suit map
-        Suit trumpSuit = (Suit) info.getFirst().getSuit();
+        Suit trumpSuit = (Suit) ((ITrickModel) topic).getCards().getFirst().getSuit();
         Suit recentCardSuit = (Suit) ((ITrickModel) topic).getRecentCard().getSuit();
 
         if (!recentCardSuit.equals(trumpSuit)) {

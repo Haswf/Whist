@@ -53,10 +53,16 @@ public class WhistController {
         return view.getSelected();
     }
 
-    private Card NPCSelectCard(int player) {
+    private Card NPCSelectCardLead(int player) {
         Whist.getInstance().setStatusText("Player " + player + " thinking...");
         Whist.getInstance().delay(Whist.getInstance().thinkingTime);
         return model.getNpcs().get(player).selectCardLead();
+    }
+
+    private Card NPCSelectCardFollow(int player, CardUtil.Suit lead, Card winningCard, CardUtil.Suit trump) {
+        Whist.getInstance().setStatusText("Player " + player + " thinking...");
+        Whist.getInstance().delay(Whist.getInstance().thinkingTime);
+        return model.getNpcs().get(player).selectCardFollow(lead, winningCard, trump);
     }
 
     public Optional<Integer> playRound() {  // Returns winner, if any
@@ -79,7 +85,7 @@ public class WhistController {
             }
             // npc
             else {
-                selected = NPCSelectCard(nextPlayer);
+                selected = NPCSelectCardLead(nextPlayer);
             }
 //            CardUtil.Suit lead = (CardUtil.Suit) selected.getSuit();
             trickController.transfer(selected, nextPlayer);
@@ -95,7 +101,8 @@ public class WhistController {
                 if (0 == nextPlayer) {
                     selected = playerSelectCard();
                 } else {
-                    selected = NPCSelectCard(nextPlayer);
+                    selected = NPCSelectCardFollow(nextPlayer,
+                            (CardUtil.Suit) trickController.getModel().getCards().getFirst().getSuit(), winningCard, trumps);
                 }
                 trickController.transfer(selected, nextPlayer);
                 selected.setVerso(false);  // In case it is upside down
@@ -115,10 +122,11 @@ public class WhistController {
                 // End Follow
             }
             System.out.println("End of trick");
-            // reset Trick hand
-            System.out.println(trickController.getModel().getCards());
             nextPlayer = winner;
+
+            // reset trick hand
             trickController.clear();
+            System.out.println(trickController.getModel().getCards());
             scoreboardController.inc(winner);
             Whist.getInstance().setStatusText("Player " + nextPlayer + " wins trick.");
             if (Whist.getInstance().winningScore == scoreboardController.get(nextPlayer)) {

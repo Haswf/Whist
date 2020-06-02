@@ -36,11 +36,12 @@ public class TrickModel implements IObservable, ITrickModel {
 
     @Override
     public void transfer(Card selected, int playerNum) {
-        notifyObservers();
+
         selected.transfer(this.cards, true);
         this.recentCard = selected;
         this.recentCardPlayerNum = playerNum;
         changed = true;
+        notifyObservers();
     }
 
     @Override

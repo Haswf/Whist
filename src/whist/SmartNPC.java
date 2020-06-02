@@ -56,6 +56,8 @@ public class SmartNPC extends NPC {
         }
         // if cant follow suit, try to play a trump
         else{
+            // currently playing lowest, trump
+            // however if a trump is currently winning beat that trump
             System.out.println("Short-Suited");
             Hand trumpHand = getHand().extractCardsWithSuit(trump);
 
@@ -69,9 +71,17 @@ public class SmartNPC extends NPC {
             // play lowest trump
             else{
                 System.out.println("Trumping!");
-                Card selectedToBe = trumpHand.sort(Hand.SortType.RANKPRIORITY, true);
-                System.out.println(selectedToBe);
-                selected = getHand().getCard(selectedToBe.getCardNumber());
+                if(winningCard.getSuit().equals(trump)){
+                    // beat the trump
+                    int selectedToBeIndex = trumpHand.getMaxPosition(Hand.SortType.RANKPRIORITY);
+                    Card selectedToBe = trumpHand.getCard(selectedToBeIndex);
+                    selected = getHand().getCard(selectedToBe.getCardNumber());
+                }
+                else {
+                    Card selectedToBe = trumpHand.sort(Hand.SortType.RANKPRIORITY, true);
+                    System.out.println(selectedToBe);
+                    selected = getHand().getCard(selectedToBe.getCardNumber());
+                }
                 return selected;
             }
         }
