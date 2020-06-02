@@ -4,17 +4,23 @@ import ch.aplu.jcardgame.CardGame;
 import whist.controller.WhistController;
 import whist.model.WhistModel;
 
+import java.io.FileInputStream;
 import java.util.Optional;
+import java.util.Properties;
 
 public class Whist extends CardGame {
 
     private volatile static Whist uniqueInstance;
-    public final String version = "1.0";
-    public final int nbPlayers = 4;
-    public final int nbStartCards = 13;
-    public final int winningScore = 11;
-    public final int thinkingTime = 2000;
-    public boolean enforceRules = false;
+    public String version;
+    public int nbPlayers = 4;
+    public int nbStartCards;
+    public int winningScore;
+    public int thinkingTime;
+    public boolean enforceRules;
+    public int seed;
+    public int legalNPCs;
+    public int player;
+    public int smartNPCs;
 
     private Whist() {
         super(700, 700, 30);
@@ -32,8 +38,30 @@ public class Whist extends CardGame {
     }
 
     public static void main(String[] args) {
-        // System.out.println("Working Directory = " + System.getProperty("user.dir"));
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+        Whist.getInstance().readPropertiesFile();
         Whist.getInstance().run();
+    }
+
+    public void readPropertiesFile() {
+        String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        System.out.println(rootPath);
+        String gameConfigPath = rootPath + "original.properties";
+        Properties props = new Properties();
+        try {
+            props.load(new FileInputStream(gameConfigPath));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.version = props.getProperty("version");
+        this.thinkingTime = Integer.parseInt(props.getProperty("thinkingTime"));
+        this.seed = Integer.parseInt(props.getProperty("seed"));
+        this.winningScore = Integer.parseInt(props.getProperty("winningScore"));
+        this.nbStartCards = Integer.parseInt(props.getProperty("nbStartCards"));
+        this.legalNPCs = Integer.parseInt(props.getProperty("legalNPCs"));
+        this.player = Integer.parseInt(props.getProperty("player"));
+        this.smartNPCs = Integer.parseInt(props.getProperty("smartNPCs"));
+        this.enforceRules = Boolean.parseBoolean(props.getProperty("enforceRules"));
     }
 
     public void run() {
