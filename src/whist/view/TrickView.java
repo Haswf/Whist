@@ -29,7 +29,11 @@ public class TrickView implements IObserver {
 
     @Override
     public void update() {
-        this.model.getCards().setView(Whist.getInstance(), new RowLayout(trickLocation, (this.model.getCards().getNumberOfCards()+2)*trickWidth));
+        this.model.getCards().draw();
+    }
+
+    public void increaseWidth() {
+        this.model.getCards().setView(Whist.getInstance(), new RowLayout(trickLocation, (model.getCards().getNumberOfCards() + 2) * trickWidth));
         this.model.getCards().draw();
     }
 

@@ -24,6 +24,7 @@ public class TrickController {
     }
 
     public void transfer(Card selected, int playerNum) {
+        view.increaseWidth();
         model.transfer(selected, playerNum);
     }
 }

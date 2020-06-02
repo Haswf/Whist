@@ -11,7 +11,6 @@ import whist.interfaces.IScoreboardModel;
 
 import java.awt.*;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class ScoreboardView implements IObserver { /*
@@ -44,9 +43,7 @@ public class ScoreboardView implements IObserver { /*
 
     @Override
     public void update() {
-        Iterator<Map.Entry<Integer, Integer>> it = model.getScores().entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<Integer, Integer> pair = it.next();
+        for (Map.Entry<Integer, Integer> pair : model.getScores().entrySet()) {
             int player = pair.getKey();
             int score = pair.getValue();
             if (scoreActors.containsKey(player)) {
