@@ -62,6 +62,7 @@ public class Whist extends CardGame {
         this.player = Integer.parseInt(props.getProperty("player"));
         this.smartNPCs = Integer.parseInt(props.getProperty("smartNPCs"));
         this.enforceRules = Boolean.parseBoolean(props.getProperty("enforceRules"));
+        assert (legalNPCs + player + smartNPCs == nbPlayers);
     }
 
     public void run() {
