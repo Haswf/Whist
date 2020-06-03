@@ -12,10 +12,11 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class NPC implements ISelectCardStrategy, IObserver {
+public abstract class NPC implements IObserver {
 
     private final int playerNumber;
     private Hand hand;
+
 
     private final IObservable topic;
     private Hand info;
@@ -50,8 +51,7 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
      * Concrete whist.NPC will implement strategy
      * @return
      */
-    @Override
-    public abstract Card selectCardLead();
+    public abstract Card selectCardLead(Hand hand);
 
     /**
      * Concrete whist.NPC wil implement strategy
@@ -59,7 +59,7 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
      * @param lead
      * @return
      */
-    public abstract Card selectCardFollow(Suit lead, Card winningCard, Suit trump);
+    public abstract Card selectCardFollow(Hand hand, Suit lead, Card winningCard, Suit trump);
 
     @Override
     public void update() {
@@ -90,10 +90,4 @@ public abstract class NPC implements ISelectCardStrategy, IObserver {
         this.hand = hand;
     }
 
-    // return random Card from Hand
-    public Card randomCard(Hand hand){
-        final Random random = ThreadLocalRandom.current();
-        int x = random.nextInt(hand.getNumberOfCards());
-        return hand.get(x);
-    }
 }

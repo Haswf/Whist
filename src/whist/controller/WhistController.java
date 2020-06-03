@@ -56,13 +56,13 @@ public class WhistController {
     private Card NPCSelectCardLead(int player) {
         Whist.getInstance().setStatusText("Player " + player + " thinking...");
         Whist.getInstance().delay(Whist.getInstance().thinkingTime);
-        return model.getNpcs().get(player).selectCardLead();
+        return model.getNpcs().get(player).selectCardLead(model.getNpcs().get(player).getHand());
     }
 
     private Card NPCSelectCardFollow(int player, CardUtil.Suit lead, Card winningCard, CardUtil.Suit trump) {
         Whist.getInstance().setStatusText("Player " + player + " thinking...");
         Whist.getInstance().delay(Whist.getInstance().thinkingTime);
-        return model.getNpcs().get(player).selectCardFollow(lead, winningCard, trump);
+        return model.getNpcs().get(player).selectCardFollow(model.getNpcs().get(player).getHand(), lead, winningCard, trump);
     }
 
     public Optional<Integer> playRound() {  // Returns winner, if any
