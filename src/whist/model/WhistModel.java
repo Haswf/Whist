@@ -2,6 +2,7 @@ package whist.model;
 
 import ch.aplu.jcardgame.Deck;
 import ch.aplu.jcardgame.Hand;
+import whist.Dealer;
 import whist.DeckFactory;
 import whist.NPC;
 import whist.Whist;
@@ -15,11 +16,13 @@ public class WhistModel implements IWhistModel {
     private final Deck deck = DeckFactory.getInstance().createStandardDeck();
     private final int nbPlayers = Whist.getInstance().nbPlayers;
     private final int nbStartCards = Whist.getInstance().nbStartCards;
+    private final Dealer dealer;
     public Hand[] hands;
     private List<NPC> npcs;
 
     public WhistModel() {
         npcs = new ArrayList<>();
+        dealer = new Dealer();
     }
 
     public List<NPC> getNpcs() {
@@ -42,7 +45,7 @@ public class WhistModel implements IWhistModel {
 
     @Override
     public void dealingOut() {
-        hands = deck.dealingOut(nbPlayers, nbStartCards); // Last element of hands is leftover cards; these are ignored
+        hands = dealer.deal(deck, nbPlayers, nbStartCards); // Last element of hands is leftover cards; these are ignored
     }
 
     @Override
