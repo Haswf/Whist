@@ -4,7 +4,7 @@ import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
 import whist.CardUtil;
 
-public interface IPlayerAction {
+public interface IPlayer {
     Card selectCardLead();
 
     Card selectCardFollow(Card winningCard, CardUtil.Suit trump);

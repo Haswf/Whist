@@ -5,10 +5,9 @@ import ch.aplu.jcardgame.Hand;
 
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class CardUtil {
-    static final Random random = ThreadLocalRandom.current();
+    static final Random random = new Random(Whist.getInstance().getSeed());
 
     // return random Enum value
     public static <T extends Enum<?>> T randomEnum(Class<T> clazz) {

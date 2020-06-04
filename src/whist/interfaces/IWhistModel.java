@@ -6,7 +6,7 @@ import whist.NPC;
 import java.util.List;
 
 public interface IWhistModel {
-    boolean addPlayer(IPlayerAction player);
+    boolean addPlayer(IPlayer player);
 
     int getNbPlayers();
 
@@ -20,5 +20,5 @@ public interface IWhistModel {
 
     void dealingOut();
 
-    List<IPlayerAction> getPlayers();
+    List<IPlayer> getPlayers();
 }

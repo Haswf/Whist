@@ -5,7 +5,7 @@ import whist.CardUtil;
 import whist.InteractivePlayer;
 import whist.NPCFactory;
 import whist.Whist;
-import whist.interfaces.IPlayerAction;
+import whist.interfaces.IPlayer;
 import whist.interfaces.IWhistModel;
 import whist.model.ScoreboardModel;
 import whist.model.TrickModel;
@@ -13,10 +13,9 @@ import whist.view.WhistView;
 
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class WhistController {
-    static final Random random = ThreadLocalRandom.current();
+    static final Random random = new Random(Whist.getInstance().getSeed());
     private final IWhistModel model;
     private final WhistView view;
     private final ScoreboardController scoreboardController;
@@ -61,34 +60,38 @@ public class WhistController {
         view.onGameOver(winner);
     }
 
+    private int nextPlayer(int currentPlayer) {
+        if (++currentPlayer >= model.getNbPlayers()) {
+            currentPlayer = 0;  // From last back to first
+        }
+        return currentPlayer;
+    }
+
     public Optional<Integer> playRound() {  // Returns winner, if any
         Card selected;
+        // randomly select player to lead for this round
+        int currentPlayer = random.nextInt(model.getNbPlayers());
+
         final CardUtil.Suit trumps = CardUtil.randomEnum(CardUtil.Suit.class);
         view.showTrump(trumps);
 
-        // End trump suit
         int winner;
         Card winningCard;
-        // randomly select player to lead for this round
-        int nextPlayer = random.nextInt(model.getNbPlayers());
-
 
         // until all cards have been played
         for (int i = 0; i < model.getNbStartCards(); i++) {
-            IPlayerAction player = model.getPlayers().get(nextPlayer);
+            IPlayer player = model.getPlayers().get(currentPlayer);
             selected = player.selectCardLead();
-            trickController.transfer(selected, nextPlayer);
-            winner = nextPlayer;
+            trickController.transfer(selected, currentPlayer);
+            winner = currentPlayer;
             winningCard = selected;
+            currentPlayer = nextPlayer(currentPlayer);
 
             // End Lead
             for (int j = 1; j < model.getNbPlayers(); j++) {
-                if (++nextPlayer >= model.getNbPlayers()) {
-                    nextPlayer = 0;  // From last back to first
-                }
-                player = model.getPlayers().get(nextPlayer);
+                player = model.getPlayers().get(currentPlayer);
                 selected = player.selectCardFollow(winningCard, trumps);
-                trickController.transfer(selected, nextPlayer);
+                trickController.transfer(selected, currentPlayer);
                 // transfer to trick (includes graphic effect)
                 System.out.println("winning: suit = " + winningCard.getSuit() + ", rank = " + winningCard.getRankId());
                 System.out.println("played: suit = " + selected.getSuit() + ", rank = " + selected.getRankId());
@@ -97,21 +100,20 @@ public class WhistController {
                                 // trumped when non-trump was winning
                                 (selected.getSuit() == trumps && winningCard.getSuit() != trumps)) {
                     System.out.println("NEW WINNER");
-                    winner = nextPlayer;
+                    winner = currentPlayer;
                     winningCard = selected;
                 }
                 // End Follow
             }
             System.out.println("End of trick");
-            nextPlayer = winner;
-
+            currentPlayer = winner;
 
             // reset trick hand
             trickController.clear();
             scoreboardController.inc(winner);
             view.showWinner(winner);
-            if (Whist.getInstance().getWinningScore() == scoreboardController.get(nextPlayer)) {
-                return Optional.of(nextPlayer);
+            if (Whist.getInstance().getWinningScore() == scoreboardController.get(currentPlayer)) {
+                return Optional.of(currentPlayer);
             }
         }
         view.clearTrump();

@@ -7,7 +7,7 @@ import whist.interfaces.*;
 
 import java.util.HashMap;
 
-public class NPC implements IObserver, IPlayerAction {
+public class NPC implements IObserver, IPlayer {
 
     private final ISelectCardStrategy strategy;
     private Card selected;

@@ -6,7 +6,7 @@ import ch.aplu.jcardgame.Hand;
 import whist.DeckFactory;
 import whist.NPC;
 import whist.Whist;
-import whist.interfaces.IPlayerAction;
+import whist.interfaces.IPlayer;
 import whist.interfaces.IWhistModel;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class WhistModel implements IWhistModel {
 
     public Hand[] hands;
     private List<NPC> npcs;
-    private final List<IPlayerAction> players;
+    private final List<IPlayer> players;
 
     public WhistModel() {
         random = new Random(Whist.getInstance().getSeed());
@@ -30,7 +30,7 @@ public class WhistModel implements IWhistModel {
         players = new ArrayList<>();
     }
 
-    public List<IPlayerAction> getPlayers() {
+    public List<IPlayer> getPlayers() {
         return players;
     }
 
@@ -78,11 +78,11 @@ public class WhistModel implements IWhistModel {
 
     @Override
     public void reset() {
-        players.forEach(IPlayerAction::reset);
+        players.forEach(IPlayer::reset);
     }
 
     @Override
-    public boolean addPlayer(IPlayerAction player) {
+    public boolean addPlayer(IPlayer player) {
         return players.add(player);
     }
 
