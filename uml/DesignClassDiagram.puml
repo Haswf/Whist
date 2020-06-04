@@ -50,7 +50,7 @@ interface IObservable {
     + notifyObservers(): void
 }
 
-interface ITrickModel {
+interface ITrickModel extends IObservable {
     + initialise(): void
     + transfer(selected: Card, playerNum: int): void
     + clear(): void
@@ -71,5 +71,132 @@ class TrickModel implements IObservable, ITrickModel{
     + clear(): void
 }
 
+class TrickView implements IObserver {
+    + update(): void
+    + clear(): void
+    + increaseWidth(): void
+}
+
+TrickView --> TrickController
+TrickView --> ITrickModel
+
+class TrickController {
+   + clear(): void
+   + transfer(selected: Card, playerNum: int): void
+}
+
+TrickController --> ITrickModel
+TrickController --> TrickView
+
+interface IWhistModel{
+    + addNPC(npc: NPC): boolean
+    + resetNPC(): void
+    + dealingOut(): void
+}
+
+class WhistModel implements IWhistModel{
+
+    - deck: Deck
+    - nbPlayers: int
+    - nbStartCards: int
+    - hands: Hand[]
+
+    + addNPC(npc: NPC): boolean
+    + resetNPC(): void
+    + dealingOut(): void
+}
+
+WhistModel --> "*" NPC
+WhistModel --> Dealer
+
+class WhistVIew {
+    + selectCard(): void
+    + initialise(): void
+    + createLayout(): void
+    + createView(): void
+    + onGameOVer(winner: int): void
+    + showTrump(trumps: Suit): void
+    + clearTrump(): void
+}
+
+WhistVIew --> IWhistModel
+
+class WhistController{
+    + initialise(): void
+    + resetNPC(): void
+    + createNPC(): void
+    + gameOver(winner: int): void
+    + playerSelectCard(): Card
+    + NPCSelectCardLead(player: int): Card
+    + NPCSelectCardFollow(player: int, winningCard: Card, trump: Suit): Card
+    + playRound(): Optional<Integer>
+}
+
+WhistController --> IWhistModel
+WhistController --> WhistVIew
+WhistController --> TrickController
+WhistController --> ScoreBoardController
+
+interface IScoreBoardModel extends IObservable {
+    + initialise(): void
+    + put(player: int, score: int): void
+    + get(player: int): void
+    + getScores(): Map<Integer, Integer>
+}
+
+class ScoreBoardModel implements IScoreBoardModel, IObservable{
+    - scores: Map<Integer, Integer>
+    - changed: boolean
+
+    + initialise(): void
+    + put(player: int, score: int): void
+    + get(player: int): void
+    + getScores(): Map<Integer, Integer>
+    + register(obj: IObserver): void
+    + unregister(obj: IObserver): void
+    + notifyObservers(): void
+
+}
+
+ScoreBoardModel --> "*" IObserver
+
+class ScoreBoardView implements IObserver{
+    - scoreActors: Map<Integer, Actor>
+
+    + createView(): void
+    + update(): void
+}
+
+ScoreBoardView --> IScoreBoardModel
+ScoreBoardView --> ScoreBoardController
+
+class ScoreBoardController {
+    + put(player: int, score int): void
+    + inc(player: int): void
+    + get(player: int): void
+}
+
+ScoreBoardController --> IScoreBoardModel
+ScoreBoardController --> ScoreBoardView
+
+class CardUtil{
+}
+
+class Dealer{
+    + deal(): Hand[]
+}
+
+class DeckFactory {
+    - uniqueInstance: DeckFactory
+
+    + getInstance(): DeckFactory
+    + createStandardDeck(): Deck
+}
+
+class FontSingleton{
+    - uniqueInstance: FontSingleton
+
+    + getInstance(): FontSingleton
+}
 
 @enduml
