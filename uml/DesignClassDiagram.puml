@@ -8,36 +8,36 @@ abstract class NPC implements IObserver {
     - playerSuits: HashMap<Integer, HashMap<Suit, Boolean>>
     - nest: HashMap<Suit, Boolean>
 
-    + selectCardLead(hand: Hand): Card
-    + selectCardFollow(hand: Hand, winningCard: Card, trump: Suit): Card
+    + selectCardLead(): Card
+    + selectCardFollow(winningCard: Card, trump: Suit): Card
     + update(): void
 }
 NPC *--> ISelectCardStrategy
 
 class LegalNPC extends NPC {
-    + selectCardLead(hand: Hand): Card
-    + selectCardFollow(hand: Hand, winningCard: Card, trump: Suit): Card
+    + selectCardLead(): Card
+    + selectCardFollow(winningCard: Card, trump: Suit): Card
 }
 
 
 class SmartNPC extends NPC {
-     + selectCardLead(hand: Hand): Card
-     + selectCardFollow(hand: Hand, winningCard: Card, trump: Suit): Card
+     + selectCardLead(): Card
+     + selectCardFollow(winningCard: Card, trump: Suit): Card
 }
 
 interface ISelectCardStrategy {
-    + selectCardLead(hand: Hand): Card
-    + selectCardFollow(hand: Hand, lead: Suit, winningCard: Card, trump: Suit): Card
+    + selectCardLead(NPC: npc): Card
+    + selectCardFollow(NPC: npc, winningCard: Card, trump: Suit): Card
 }
 
 class LegalSelectCardHandle implements ISelectCardStrategy{
-    + selectCardLead(hand: Hand): Card
-    + selectCardFollow(hand: Hand, lead: Suit, winningCard: Card, trump: Suit): Card
+    + selectCardLead(NPC: npc): Card
+    + selectCardFollow(NPC: npc, winningCard: Card, trump: Suit): Card
 }
 
 class SmartSelectCardHandle implements ISelectCardStrategy{
-    + selectCardLead(hand: Hand): Card
-    + selectCardFollow(hand: Hand, lead: Suit, winningCard: Card, trump: Suit): Card
+    + selectCardLead(NPC: npc): Card
+    + selectCardFollow(NPC: npc, winningCard: Card, trump: Suit): Card
 }
 
 interface IObserver {
