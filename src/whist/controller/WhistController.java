@@ -39,8 +39,8 @@ public class WhistController {
     }
 
     public void createNPC() {
-        for (int i = 0; i < Whist.getInstance().nbPlayers; i++) {
-            model.addNPC(new SmartNPC(i, trickController.getModel(), Whist.getInstance().nbPlayers));
+        for (int i = 0; i < Whist.getInstance().getNbPlayers(); i++) {
+            model.addNPC(new SmartNPC(i, trickController.getModel(), Whist.getInstance().getNbPlayers()));
         }
     }
 
@@ -55,13 +55,13 @@ public class WhistController {
 
     private Card NPCSelectCardLead(int player) {
         Whist.getInstance().setStatusText("Player " + player + " thinking...");
-        Whist.getInstance().delay(Whist.getInstance().thinkingTime);
+        Whist.getInstance().delay(Whist.getInstance().getThinkingTime());
         return model.getNpcs().get(player).selectCardLead();
     }
 
     private Card NPCSelectCardFollow(int player, Card winningCard, CardUtil.Suit trump) {
         Whist.getInstance().setStatusText("Player " + player + " thinking...");
-        Whist.getInstance().delay(Whist.getInstance().thinkingTime);
+        Whist.getInstance().delay(Whist.getInstance().getThinkingTime());
         return model.getNpcs().get(player).selectCardFollow(winningCard, trump);
     }
 
@@ -128,7 +128,7 @@ public class WhistController {
             System.out.println(trickController.getModel().getCards());
             scoreboardController.inc(winner);
             Whist.getInstance().setStatusText("Player " + nextPlayer + " wins trick.");
-            if (Whist.getInstance().winningScore == scoreboardController.get(nextPlayer)) {
+            if (Whist.getInstance().getWinningScore() == scoreboardController.get(nextPlayer)) {
                 return Optional.of(nextPlayer);
             }
         }

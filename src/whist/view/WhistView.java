@@ -36,7 +36,7 @@ public class WhistView {
         this.controller = controller;
         this.model = model;
         this.layouts = new HashMap<>();
-        Whist.getInstance().setTitle("whist.Whist (V" + Whist.getInstance().version + ") Constructed for UofM SWEN30006 with JGameGrid (www.aplu.ch)");
+        Whist.getInstance().setTitle("whist.Whist (V" + Whist.getInstance().getGameVersion() + ") Constructed for UofM SWEN30006 with JGameGrid (www.aplu.ch)");
     }
 
     public Card getSelected() {
@@ -72,7 +72,8 @@ public class WhistView {
     }
 
     public void initialise() {
-        for (int i = 0; i < Whist.getInstance().nbPlayers; i++) {
+        for (int i = 0; i < Whist.getInstance().getNbPlayers(); i++) {
+            // TODO:
             model.getNpcs().get(i).setHand(model.getHands()[i]);
             Hand hand = model.getHands()[i];
             hand.setView(Whist.getInstance(), layouts.get(i));
@@ -83,7 +84,7 @@ public class WhistView {
     }
 
     public void createLayout() {
-        for (int i = 0; i < Whist.getInstance().nbPlayers; i++) {
+        for (int i = 0; i < Whist.getInstance().getNbPlayers(); i++) {
             RowLayout playerLayout = new RowLayout(handLocations[i], handWidth);
             playerLayout.setRotationAngle(90 * i);
             layouts.put(i, playerLayout);

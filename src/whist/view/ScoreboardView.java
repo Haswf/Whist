@@ -35,7 +35,7 @@ public class ScoreboardView implements IObserver { /*
     }
 
     public void createView() {
-        for (int player = 0; player < Whist.getInstance().nbPlayers; player++) {
+        for (int player = 0; player < Whist.getInstance().getNbPlayers(); player++) {
             scoreActors.put(player, new TextActor("0", Color.WHITE, Whist.getInstance().bgColor, FontSingleton.getInstance().getBigFont()));
             Whist.getInstance().addActor(scoreActors.get(player), scoreLocations[player]);
         }

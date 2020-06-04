@@ -14,8 +14,8 @@ import java.util.List;
 // MOVE NPC INSTANTIATION TO WHIST CONSTRUCTOR
 public class WhistModel implements IWhistModel {
     private final Deck deck = DeckFactory.getInstance().createStandardDeck();
-    private final int nbPlayers = Whist.getInstance().nbPlayers;
-    private final int nbStartCards = Whist.getInstance().nbStartCards;
+    private final int nbPlayers = Whist.getInstance().getNbPlayers();
+    private final int nbStartCards = Whist.getInstance().getNbStartCards();
     private final Dealer dealer;
     public Hand[] hands;
     private List<NPC> npcs;

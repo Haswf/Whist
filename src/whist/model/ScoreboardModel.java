@@ -38,7 +38,7 @@ public class ScoreboardModel implements IScoreboardModel, IObservable {
 
     public void initialise() {
         // Notify the observers once scoreboard has been initialised
-        for (int player = 0; player < Whist.getInstance().nbPlayers; player++) {
+        for (int player = 0; player < Whist.getInstance().getNbPlayers(); player++) {
             this.scores.put(player, 0);
         }
     }
