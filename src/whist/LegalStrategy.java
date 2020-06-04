@@ -4,21 +4,18 @@ import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
 import whist.interfaces.ISelectCardStrategy;
 
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-
-public class LegalSelectCardHandle implements ISelectCardStrategy {
+public class LegalStrategy implements ISelectCardStrategy {
 
     private Card selected;
 
-    public LegalSelectCardHandle() {
+    public LegalStrategy() {
         this.selected = null;
     }
 
     @Override
     public Card selectCardLead(NPC npc) {
         // lead with any random card
-        return this.randomCard(npc.getHand());
+        return CardUtil.randomCard(npc.getHand());
     }
 
     @Override
@@ -27,15 +24,8 @@ public class LegalSelectCardHandle implements ISelectCardStrategy {
         Hand hand = npc.getHand();
         CardUtil.Suit lead = (CardUtil.Suit) npc.getInfo().getFirst().getSuit();
         do {
-            selected = randomCard(hand);
+            selected = CardUtil.randomCard(hand);
         } while (selected.getSuit() != lead && hand.getNumberOfCardsWithSuit(lead) > 0);
         return selected;
-    }
-
-    // return random Card from Hand
-    public Card randomCard(Hand hand){
-        final Random random = ThreadLocalRandom.current();
-        int x = random.nextInt(hand.getNumberOfCards());
-        return hand.get(x);
     }
 }

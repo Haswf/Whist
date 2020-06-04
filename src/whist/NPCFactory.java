@@ -20,10 +20,10 @@ public class NPCFactory{
     }
 
     public NPC createLegalNPC(int playerNumber, TrickController trickController){
-        return new NPC(playerNumber, trickController.getModel(), Whist.getInstance().getNbPlayers(), new LegalSelectCardHandle());
+        return new NPC(playerNumber, trickController.getModel(), Whist.getInstance().getNbPlayers(), new LegalStrategy());
     }
 
     public NPC createSmartNPC(int playerNumber, TrickController trickController){
-        return new NPC(playerNumber, trickController.getModel(), Whist.getInstance().getNbPlayers(), new SmartSelectCardHandle());
+        return new NPC(playerNumber, trickController.getModel(), Whist.getInstance().getNbPlayers(), new SmartStrategy());
     }
 }

@@ -4,11 +4,11 @@ import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
 import whist.interfaces.ISelectCardStrategy;
 
-public class SmartSelectCardHandle implements ISelectCardStrategy {
+public class SmartStrategy implements ISelectCardStrategy {
 
     private Card selected;
 
-    public SmartSelectCardHandle() {
+    public SmartStrategy() {
         this.selected = null;
     }
 

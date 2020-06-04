@@ -46,7 +46,6 @@ public class WhistView {
 
     public void initialise() {
         for (int i = 0; i < Whist.getInstance().getNbPlayers(); i++) {
-            // TODO:
             Hand hand = model.getHands()[i];
             model.getPlayers().get(i).setHand(hand);
             hand.setView(Whist.getInstance(), layouts.get(i));

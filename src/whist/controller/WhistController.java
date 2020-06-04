@@ -28,11 +28,11 @@ public class WhistController {
         scoreboardController = new ScoreboardController(new ScoreboardModel());
         trickController = new TrickController(new TrickModel());
         npcFactory = NPCFactory.getInstance();
+        createPlayer();
     }
 
-    public void initialise() {
+    public void dealingOut() {
         model.dealingOut();
-        createPlayer();
         view.createView();
     }
 
@@ -103,6 +103,7 @@ public class WhistController {
                     winner = currentPlayer;
                     winningCard = selected;
                 }
+                currentPlayer = nextPlayer(currentPlayer);
                 // End Follow
             }
             System.out.println("End of trick");
@@ -119,4 +120,5 @@ public class WhistController {
         view.clearTrump();
         return Optional.empty();
     }
+
 }
