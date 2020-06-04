@@ -26,6 +26,7 @@ public class SmartSelectCardHandle implements ISelectCardStrategy {
     public Card selectCardFollow(Hand hand, CardUtil.Suit lead, Card winningCard, CardUtil.Suit trump) {
         System.out.print("The lead suit is ");
         System.out.println(lead);
+
         // follow with card to beat current winning card
         Hand validHand = hand.extractCardsWithSuit(lead);
         System.out.println(validHand);

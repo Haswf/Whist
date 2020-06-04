@@ -24,8 +24,8 @@ public class SmartNPC extends NPC {
     }
 
     @Override
-    public Card selectCardFollow(Hand hand, Suit lead, Card winningCard, Suit trump) {
-        selected = strategy.selectCardFollow(hand, lead, winningCard, trump);
+    public Card selectCardFollow(Hand hand, Card winningCard, Suit trump) {
+        selected = strategy.selectCardFollow(hand, (CardUtil.Suit) getInfo().getFirst().getSuit(), winningCard, trump);
         return selected;
     }
 }

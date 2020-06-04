@@ -1,0 +1,75 @@
+@startuml
+
+abstract class NPC implements IObserver {
+    - playerNumber: int
+    - hand: Hand
+    - topic: IObservable
+    - info: Hand
+    - playerSuits: HashMap<Integer, HashMap<Suit, Boolean>>
+    - nest: HashMap<Suit, Boolean>
+
+    + selectCardLead(hand: Hand): Card
+    + selectCardFollow(hand: Hand, lead: Suit, winningCard: Card, trump: Suit): Card
+    + update(): void
+}
+NPC *--> ISelectCardStrategy
+
+class LegalNPC extends NPC {
+    + selectCardLead(hand: Hand): Card
+    + selectCardFollow(hand: Hand, lead: Suit, winningCard: Card, trump: Suit): Card
+}
+
+
+class SmartNPC extends NPC {
+     + selectCardLead(hand: Hand): Card
+     + selectCardFollow(hand: Hand, lead: Suit, winningCard: Card, trump: Suit): Card
+}
+
+interface ISelectCardStrategy {
+    + selectCardLead(hand: Hand): Card
+    + selectCardFollow(hand: Hand, lead: Suit, winningCard: Card, trump: Suit): Card
+}
+
+class LegalSelectCardHandle implements ISelectCardStrategy{
+    + selectCardLead(hand: Hand): Card
+    + selectCardFollow(hand: Hand, lead: Suit, winningCard: Card, trump: Suit): Card
+}
+
+class SmartSelectCardHandle implements ISelectCardStrategy{
+    + selectCardLead(hand: Hand): Card
+    + selectCardFollow(hand: Hand, lead: Suit, winningCard: Card, trump: Suit): Card
+}
+
+interface IObserver {
+    + update(): void
+}
+
+interface IObservable {
+    + register(obj: IObserver): void
+    + unregister(obj: IObserver): void
+    + notifyObservers(): void
+}
+
+interface ITrickModel {
+    + initialise(): void
+    + transfer(selected: Card, playerNum: int): void
+    + clear(): void
+}
+
+class TrickModel implements IObservable, ITrickModel{
+    - cards: Hand
+    - recentCard: Card
+    - recentCardPlayerNum: int
+    - changed: boolean
+    - observers: List<IObserver>
+
+    + register(obj: IObserver): void
+    + unregister(obj: IObserver): void
+    + notifyObservers(): void
+    + initialise(): void
+    + transfer(selected: Card, playerNum: int): void
+    + clear(): void
+}
+
+
+@enduml

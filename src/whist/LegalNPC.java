@@ -28,8 +28,8 @@ public class LegalNPC extends NPC {
     }
 
     @Override
-    public Card selectCardFollow(Hand hand, CardUtil.Suit lead, Card winningCard, CardUtil.Suit trump) {
-        selected = strategy.selectCardFollow(hand, lead, winningCard, trump);
+    public Card selectCardFollow(Hand hand, Card winningCard, CardUtil.Suit trump) {
+        selected = strategy.selectCardFollow(hand, (CardUtil.Suit) getInfo().getFirst().getSuit(), winningCard, trump);
         return selected;
     }
 }

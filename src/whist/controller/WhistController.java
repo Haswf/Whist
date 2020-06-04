@@ -59,10 +59,10 @@ public class WhistController {
         return model.getNpcs().get(player).selectCardLead(model.getNpcs().get(player).getHand());
     }
 
-    private Card NPCSelectCardFollow(int player, CardUtil.Suit lead, Card winningCard, CardUtil.Suit trump) {
+    private Card NPCSelectCardFollow(int player, Card winningCard, CardUtil.Suit trump) {
         Whist.getInstance().setStatusText("Player " + player + " thinking...");
         Whist.getInstance().delay(Whist.getInstance().thinkingTime);
-        return model.getNpcs().get(player).selectCardFollow(model.getNpcs().get(player).getHand(), lead, winningCard, trump);
+        return model.getNpcs().get(player).selectCardFollow(model.getNpcs().get(player).getHand(), winningCard, trump);
     }
 
     public Optional<Integer> playRound() {  // Returns winner, if any
@@ -101,8 +101,7 @@ public class WhistController {
                 if (0 == nextPlayer) {
                     selected = playerSelectCard();
                 } else {
-                    selected = NPCSelectCardFollow(nextPlayer,
-                            (CardUtil.Suit) trickController.getModel().getCards().getFirst().getSuit(), winningCard, trumps);
+                    selected = NPCSelectCardFollow(nextPlayer, winningCard, trumps);
                 }
                 trickController.transfer(selected, nextPlayer);
                 selected.setVerso(false);  // In case it is upside down

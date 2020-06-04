@@ -17,19 +17,18 @@ public abstract class NPC implements IObserver {
     private final int playerNumber;
     private Hand hand;
 
-
     private final IObservable topic;
     private Hand info;
-    private final HashMap<Integer, HashMap<CardUtil.Suit, Boolean>> player_suits;
+    private final HashMap<Integer, HashMap<CardUtil.Suit, Boolean>> playerSuits;
     private HashMap<Suit, Boolean> nest;
 
     public NPC(int playerNumber, ITrickModel model, int numPlayers) {
         this.playerNumber = playerNumber;
-        // setting topic = Trick
+        this.info = null;
         topic = model;
         topic.register(this);
 
-        player_suits = new HashMap<>();
+        playerSuits = new HashMap<>();
         for (int i = 0; i < numPlayers; i++) {
             nest = new HashMap<>();
             for (int j = 0; j < 4; j++) {
@@ -43,7 +42,7 @@ public abstract class NPC implements IObserver {
                     nest.put(Suit.CLUBS, true);
                 }
             }
-            player_suits.put(i, nest);
+            playerSuits.put(i, nest);
         }
     }
 
@@ -55,11 +54,9 @@ public abstract class NPC implements IObserver {
 
     /**
      * Concrete whist.NPC wil implement strategy
-     *
-     * @param lead
      * @return
      */
-    public abstract Card selectCardFollow(Hand hand, Suit lead, Card winningCard, Suit trump);
+    public abstract Card selectCardFollow(Hand hand, Card winningCard, Suit trump);
 
     @Override
     public void update() {
@@ -74,7 +71,7 @@ public abstract class NPC implements IObserver {
         Suit recentCardSuit = (Suit) ((ITrickModel) topic).getRecentCard().getSuit();
 
         if (!recentCardSuit.equals(trumpSuit)) {
-            nest = player_suits.get(((ITrickModel) topic).getRecentCardPlayerNum());
+            nest = playerSuits.get(((ITrickModel) topic).getRecentCardPlayerNum());
             nest.put(trumpSuit, false);
         }
     }
@@ -90,4 +87,7 @@ public abstract class NPC implements IObserver {
         this.hand = hand;
     }
 
+    public Hand getInfo() {
+        return info;
+    }
 }

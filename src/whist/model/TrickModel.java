@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrickModel implements IObservable, ITrickModel {
-    public Hand cards;
+    private Hand cards;
     private Card recentCard;
     private int recentCardPlayerNum;
     private boolean changed;
@@ -80,11 +80,12 @@ public class TrickModel implements IObservable, ITrickModel {
         return this;
     }
 
-
+    @Override
     public Card getRecentCard() {
         return recentCard;
     }
 
+    @Override
     public int getRecentCardPlayerNum() {
         return recentCardPlayerNum;
     }
