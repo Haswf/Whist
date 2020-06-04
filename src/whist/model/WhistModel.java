@@ -43,7 +43,7 @@ public class WhistModel implements IWhistModel {
             }
         }
         handList.add(complete);
-        return handList.toArray(new Hand[handList.size()]);
+        return handList.toArray(new Hand[0]);
     }
 
     public List<NPC> getNpcs() {
