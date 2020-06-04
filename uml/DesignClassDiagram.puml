@@ -9,20 +9,20 @@ abstract class NPC implements IObserver {
     - nest: HashMap<Suit, Boolean>
 
     + selectCardLead(hand: Hand): Card
-    + selectCardFollow(hand: Hand, lead: Suit, winningCard: Card, trump: Suit): Card
+    + selectCardFollow(hand: Hand, winningCard: Card, trump: Suit): Card
     + update(): void
 }
 NPC *--> ISelectCardStrategy
 
 class LegalNPC extends NPC {
     + selectCardLead(hand: Hand): Card
-    + selectCardFollow(hand: Hand, lead: Suit, winningCard: Card, trump: Suit): Card
+    + selectCardFollow(hand: Hand, winningCard: Card, trump: Suit): Card
 }
 
 
 class SmartNPC extends NPC {
      + selectCardLead(hand: Hand): Card
-     + selectCardFollow(hand: Hand, lead: Suit, winningCard: Card, trump: Suit): Card
+     + selectCardFollow(hand: Hand, winningCard: Card, trump: Suit): Card
 }
 
 interface ISelectCardStrategy {

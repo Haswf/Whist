@@ -22,14 +22,14 @@ public class LegalNPC extends NPC {
     }
 
     @Override
-    public Card selectCardLead(Hand hand) {
-        selected = strategy.selectCardLead(hand);
+    public Card selectCardLead() {
+        selected = strategy.selectCardLead(this);
         return selected;
     }
 
     @Override
-    public Card selectCardFollow(Hand hand, Card winningCard, CardUtil.Suit trump) {
-        selected = strategy.selectCardFollow(hand, (CardUtil.Suit) getInfo().getFirst().getSuit(), winningCard, trump);
+    public Card selectCardFollow(Card winningCard, CardUtil.Suit trump) {
+        selected = strategy.selectCardFollow(this, winningCard, trump);
         return selected;
     }
 }

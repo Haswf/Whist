@@ -16,13 +16,16 @@ public class LegalSelectCardHandle implements ISelectCardStrategy {
     }
 
     @Override
-    public Card selectCardLead(Hand hand) {
+    public Card selectCardLead(NPC npc) {
         // lead with any random card
-        return this.randomCard(hand);
+        return this.randomCard(npc.getHand());
     }
 
     @Override
-    public Card selectCardFollow(Hand hand, CardUtil.Suit lead, Card winningCard, CardUtil.Suit trump) {
+    public Card selectCardFollow(NPC npc, Card winningCard, CardUtil.Suit trump) {
+
+        Hand hand = npc.getHand();
+        CardUtil.Suit lead = (CardUtil.Suit) npc.getInfo().getFirst().getSuit();
         do {
             selected = randomCard(hand);
         } while (selected.getSuit() != lead && hand.getNumberOfCardsWithSuit(lead) > 0);

@@ -50,13 +50,13 @@ public abstract class NPC implements IObserver {
      * Concrete whist.NPC will implement strategy
      * @return
      */
-    public abstract Card selectCardLead(Hand hand);
+    public abstract Card selectCardLead();
 
     /**
      * Concrete whist.NPC wil implement strategy
      * @return
      */
-    public abstract Card selectCardFollow(Hand hand, Card winningCard, Suit trump);
+    public abstract Card selectCardFollow(Card winningCard, Suit trump);
 
     @Override
     public void update() {

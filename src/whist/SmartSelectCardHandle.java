@@ -13,17 +13,19 @@ public class SmartSelectCardHandle implements ISelectCardStrategy {
     }
 
     @Override
-    public Card selectCardLead(Hand hand) {
+    public Card selectCardLead(NPC npc) {
         // lead with 'best card'
-        int bestCardIndex = hand.getMaxPosition(Hand.SortType.RANKPRIORITY);
-        Card selected = hand.get(bestCardIndex);
+        int bestCardIndex = npc.getHand().getMaxPosition(Hand.SortType.RANKPRIORITY);
+        Card selected = npc.getHand().get(bestCardIndex);
         System.out.println(selected.getRank());
         System.out.println(selected.getSuit());
         return selected;
     }
 
     @Override
-    public Card selectCardFollow(Hand hand, CardUtil.Suit lead, Card winningCard, CardUtil.Suit trump) {
+    public Card selectCardFollow(NPC npc, Card winningCard, CardUtil.Suit trump) {
+        CardUtil.Suit lead = (CardUtil.Suit) npc.getInfo().getFirst().getSuit();
+        Hand hand = npc.getHand();
         System.out.print("The lead suit is ");
         System.out.println(lead);
 
