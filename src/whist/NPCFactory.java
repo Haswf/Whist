@@ -1,9 +1,6 @@
 package whist;
 
 import whist.controller.TrickController;
-import whist.interfaces.ISelectCardStrategy;
-import whist.interfaces.ITrickModel;
-import whist.model.TrickModel;
 
 public class NPCFactory{
 
@@ -23,12 +20,10 @@ public class NPCFactory{
     }
 
     public NPC createLegalNPC(int playerNumber, TrickController trickController){
-        ISelectCardStrategy strategy = new LegalSelectCardHandle();
-        return new NPC(playerNumber, trickController.getModel(), Whist.getInstance().getNbPlayers(), strategy);
+        return new NPC(playerNumber, trickController.getModel(), Whist.getInstance().getNbPlayers(), new LegalSelectCardHandle());
     }
 
     public NPC createSmartNPC(int playerNumber, TrickController trickController){
-        ISelectCardStrategy strategy = new SmartSelectCardHandle();
-        return new NPC(playerNumber, trickController.getModel(), Whist.getInstance().getNbPlayers(), strategy);
+        return new NPC(playerNumber, trickController.getModel(), Whist.getInstance().getNbPlayers(), new SmartSelectCardHandle());
     }
 }

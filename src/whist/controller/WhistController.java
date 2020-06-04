@@ -1,7 +1,11 @@
 package whist.controller;
 
 import ch.aplu.jcardgame.Card;
-import whist.*;
+import whist.CardUtil;
+import whist.InteractivePlayer;
+import whist.NPCFactory;
+import whist.Whist;
+import whist.interfaces.IPlayerAction;
 import whist.interfaces.IWhistModel;
 import whist.model.ScoreboardModel;
 import whist.model.TrickModel;
@@ -29,18 +33,27 @@ public class WhistController {
 
     public void initialise() {
         model.dealingOut();
-        createNPC();
-        view.setListener();
+        createPlayer();
         view.createView();
     }
 
-    public void resetNPC() {
-        model.resetNPC();
+    public void reset() {
+        model.reset();
     }
 
-    public void createNPC() {
-        for (int i = 0; i < Whist.getInstance().getNbPlayers(); i++) {
-            model.addNPC(npcFactory.createSmartNPC(i, trickController));
+    public void createPlayer() {
+        int playerNumber = 0;
+        if (Whist.getInstance().getPlayer() == 1) {
+            model.addPlayer(new InteractivePlayer());
+            playerNumber++;
+        }
+        for (int i = 0; i < Whist.getInstance().getSmartNPCs(); i++) {
+            model.addPlayer(npcFactory.createSmartNPC(playerNumber, trickController));
+            playerNumber++;
+        }
+        for (int j = 0; j < Whist.getInstance().getLegalNPCs(); j++) {
+            model.addPlayer(npcFactory.createLegalNPC(playerNumber, trickController));
+            playerNumber++;
         }
     }
 
@@ -48,26 +61,8 @@ public class WhistController {
         view.onGameOver(winner);
     }
 
-    private Card playerSelectCard() {
-        view.selectCard();
-        return view.getSelected();
-    }
-
-    private Card NPCSelectCardLead(int player) {
-        Whist.getInstance().setStatusText("Player " + player + " thinking...");
-        Whist.getInstance().delay(Whist.getInstance().getThinkingTime());
-        return model.getNpcs().get(player).selectCardLead();
-    }
-
-    private Card NPCSelectCardFollow(int player, Card winningCard, CardUtil.Suit trump) {
-        Whist.getInstance().setStatusText("Player " + player + " thinking...");
-        Whist.getInstance().delay(Whist.getInstance().getThinkingTime());
-        return model.getNpcs().get(player).selectCardFollow(winningCard, trump);
-    }
-
     public Optional<Integer> playRound() {  // Returns winner, if any
         Card selected;
-
         final CardUtil.Suit trumps = CardUtil.randomEnum(CardUtil.Suit.class);
         view.showTrump(trumps);
 
@@ -77,35 +72,23 @@ public class WhistController {
         // randomly select player to lead for this round
         int nextPlayer = random.nextInt(model.getNbPlayers());
 
+
         // until all cards have been played
         for (int i = 0; i < model.getNbStartCards(); i++) {
-
-            if (0 == nextPlayer) {  // Select lead depending on player type
-                selected = playerSelectCard();
-            }
-            // npc
-            else {
-                selected = NPCSelectCardLead(nextPlayer);
-            }
-//            CardUtil.Suit lead = (CardUtil.Suit) selected.getSuit();
+            IPlayerAction player = model.getPlayers().get(nextPlayer);
+            selected = player.selectCardLead();
             trickController.transfer(selected, nextPlayer);
             winner = nextPlayer;
             winningCard = selected;
-            view.setSelected(null);
 
             // End Lead
             for (int j = 1; j < model.getNbPlayers(); j++) {
                 if (++nextPlayer >= model.getNbPlayers()) {
                     nextPlayer = 0;  // From last back to first
                 }
-                if (0 == nextPlayer) {
-                    selected = playerSelectCard();
-                } else {
-                    selected = NPCSelectCardFollow(nextPlayer, winningCard, trumps);
-                }
+                player = model.getPlayers().get(nextPlayer);
+                selected = player.selectCardFollow(winningCard, trumps);
                 trickController.transfer(selected, nextPlayer);
-                selected.setVerso(false);  // In case it is upside down
-
                 // transfer to trick (includes graphic effect)
                 System.out.println("winning: suit = " + winningCard.getSuit() + ", rank = " + winningCard.getRankId());
                 System.out.println("played: suit = " + selected.getSuit() + ", rank = " + selected.getRankId());
@@ -117,17 +100,16 @@ public class WhistController {
                     winner = nextPlayer;
                     winningCard = selected;
                 }
-                view.setSelected(null);
                 // End Follow
             }
             System.out.println("End of trick");
             nextPlayer = winner;
 
+
             // reset trick hand
             trickController.clear();
-            System.out.println(trickController.getModel().getCards());
             scoreboardController.inc(winner);
-            Whist.getInstance().setStatusText("Player " + nextPlayer + " wins trick.");
+            view.showWinner(winner);
             if (Whist.getInstance().getWinningScore() == scoreboardController.get(nextPlayer)) {
                 return Optional.of(nextPlayer);
             }

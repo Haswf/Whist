@@ -1,6 +1,8 @@
 package whist.view;
 
-import ch.aplu.jcardgame.*;
+import ch.aplu.jcardgame.Hand;
+import ch.aplu.jcardgame.RowLayout;
+import ch.aplu.jcardgame.TargetArea;
 import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.Location;
 import whist.CardUtil;
@@ -30,41 +32,12 @@ public class WhistView {
     };
 
     private final Location textLocation = new Location(350, 450);
-    private Card selected;
 
     public WhistView(WhistController controller, IWhistModel model) {
         this.controller = controller;
         this.model = model;
         this.layouts = new HashMap<>();
         Whist.getInstance().setTitle("whist.Whist (V" + Whist.getInstance().getGameVersion() + ") Constructed for UofM SWEN30006 with JGameGrid (www.aplu.ch)");
-    }
-
-    public Card getSelected() {
-        return selected;
-    }
-
-    public void setSelected(Card selected) {
-        this.selected = selected;
-    }
-
-    public void selectCard() {
-        model.getHands()[0].setTouchEnabled(true);
-        Whist.getInstance().setStatusText("Player 0 double-click on card to follow.");
-        while (null == selected) {
-            Whist.getInstance().delay(100);
-        }
-    }
-
-    public void setListener() {
-        // Set up human player for interaction
-        CardListener cardListener = new CardAdapter()  // Human Player plays card
-        {
-            public void leftDoubleClicked(Card card) {
-                selected = card;
-                model.getHands()[0].setTouchEnabled(false);
-            }
-        };
-        model.getHands()[0].addCardListener(cardListener);
     }
 
     public Map<Integer, RowLayout> getLayouts() {
@@ -74,8 +47,8 @@ public class WhistView {
     public void initialise() {
         for (int i = 0; i < Whist.getInstance().getNbPlayers(); i++) {
             // TODO:
-            model.getNpcs().get(i).setHand(model.getHands()[i]);
             Hand hand = model.getHands()[i];
+            model.getPlayers().get(i).setHand(hand);
             hand.setView(Whist.getInstance(), layouts.get(i));
             hand.setTargetArea(new TargetArea(TrickView.trickLocation));
             hand.sort(Hand.SortType.SUITPRIORITY, true);
@@ -110,5 +83,9 @@ public class WhistView {
 
     public void clearTrump() {
         Whist.getInstance().removeActor(trumpsActor);
+    }
+
+    public void showWinner(int winner) {
+        Whist.getInstance().setStatusText("Player " + winner + " wins trick.");
     }
 }

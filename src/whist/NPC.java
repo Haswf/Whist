@@ -3,18 +3,13 @@ package whist;
 import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
 import whist.CardUtil.Suit;
-import whist.interfaces.IObservable;
-import whist.interfaces.IObserver;
-import whist.interfaces.ISelectCardStrategy;
-import whist.interfaces.ITrickModel;
+import whist.interfaces.*;
 
 import java.util.HashMap;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
-public class NPC implements IObserver {
+public class NPC implements IObserver, IPlayerAction {
 
-    private ISelectCardStrategy strategy;
+    private final ISelectCardStrategy strategy;
     private Card selected;
 
     private final int playerNumber;
@@ -51,13 +46,25 @@ public class NPC implements IObserver {
     }
 
     public Card selectCardLead() {
+        thinking();
         selected = strategy.selectCardLead(this);
         return selected;
     }
 
     public Card selectCardFollow(Card winningCard, Suit trump) {
+        thinking();
         selected = strategy.selectCardFollow(this, winningCard, trump);
         return selected;
+    }
+
+    public void thinking() {
+        Whist.getInstance().setStatusText("Player " + playerNumber + " thinking...");
+        Whist.getInstance().delay(Whist.getInstance().getThinkingTime());
+    }
+
+    @Override
+    public void reset() {
+        hand.removeAll(true);
     }
 
     @Override

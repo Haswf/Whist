@@ -1,5 +1,6 @@
 package whist.view;
 
+import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.RowLayout;
 import ch.aplu.jgamegrid.GameGrid;
 import ch.aplu.jgamegrid.Location;
@@ -32,7 +33,12 @@ public class TrickView implements IObserver {
         this.model.getCards().draw();
     }
 
-    public void increaseWidth() {
+    public void transfer(Card selected) {
+        increaseWidth();
+        selected.setVerso(false);  // In case it is upside down
+    }
+
+    private void increaseWidth() {
         this.model.getCards().setView(Whist.getInstance(), new RowLayout(trickLocation, (model.getCards().getNumberOfCards() + 2) * trickWidth));
         this.model.getCards().draw();
     }
