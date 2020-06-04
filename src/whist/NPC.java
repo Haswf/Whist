@@ -12,7 +12,10 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class NPC implements IObserver {
+public class NPC implements IObserver {
+
+    private ISelectCardStrategy strategy;
+    private Card selected;
 
     private final int playerNumber;
     private Hand hand;
@@ -22,9 +25,10 @@ public abstract class NPC implements IObserver {
     private final HashMap<Integer, HashMap<CardUtil.Suit, Boolean>> playerSuits;
     private HashMap<Suit, Boolean> nest;
 
-    public NPC(int playerNumber, ITrickModel model, int numPlayers) {
+    public NPC(int playerNumber, ITrickModel model, int numPlayers, ISelectCardStrategy strategy) {
         this.playerNumber = playerNumber;
         this.info = null;
+        this.strategy = strategy;
         topic = model;
         topic.register(this);
 
@@ -46,25 +50,23 @@ public abstract class NPC implements IObserver {
         }
     }
 
-    /**
-     * Concrete whist.NPC will implement strategy
-     * @return
-     */
-    public abstract Card selectCardLead();
+    public Card selectCardLead() {
+        selected = strategy.selectCardLead(this);
+        return selected;
+    }
 
-    /**
-     * Concrete whist.NPC wil implement strategy
-     * @return
-     */
-    public abstract Card selectCardFollow(Card winningCard, Suit trump);
+    public Card selectCardFollow(Card winningCard, Suit trump) {
+        selected = strategy.selectCardFollow(this, winningCard, trump);
+        return selected;
+    }
 
     @Override
     public void update() {
 
         // store current state of the hand
         this.info = ((ITrickModel) topic).getCards();
-        //System.out.println("State of hand info:");
-        //System.out.println(info);
+        System.out.println("State of hand info:");
+        System.out.println(info);
 
         // if card played did not follow suit, update player suit map
         Suit trumpSuit = (Suit) ((ITrickModel) topic).getCards().getFirst().getSuit();

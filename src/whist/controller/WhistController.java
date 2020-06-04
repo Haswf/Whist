@@ -1,9 +1,7 @@
 package whist.controller;
 
 import ch.aplu.jcardgame.Card;
-import whist.CardUtil;
-import whist.SmartNPC;
-import whist.Whist;
+import whist.*;
 import whist.interfaces.IWhistModel;
 import whist.model.ScoreboardModel;
 import whist.model.TrickModel;
@@ -19,12 +17,14 @@ public class WhistController {
     private final WhistView view;
     private final ScoreboardController scoreboardController;
     private final TrickController trickController;
+    private final NPCFactory npcFactory;
 
     public WhistController(IWhistModel model) {
         this.model = model;
         this.view = new WhistView(this, model);
         scoreboardController = new ScoreboardController(new ScoreboardModel());
         trickController = new TrickController(new TrickModel());
+        npcFactory = NPCFactory.getInstance();
     }
 
     public void initialise() {
@@ -40,7 +40,7 @@ public class WhistController {
 
     public void createNPC() {
         for (int i = 0; i < Whist.getInstance().getNbPlayers(); i++) {
-            model.addNPC(new SmartNPC(i, trickController.getModel(), Whist.getInstance().getNbPlayers()));
+            model.addNPC(npcFactory.createSmartNPC(i, trickController));
         }
     }
 
