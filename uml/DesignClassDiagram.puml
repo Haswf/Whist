@@ -1,43 +1,29 @@
 @startuml
 
-abstract class NPC implements IObserver {
+class NPC implements IObserver, IPlayer {
     - playerNumber: int
     - hand: Hand
-    - topic: IObservable
     - info: Hand
     - playerSuits: HashMap<Integer, HashMap<Suit, Boolean>>
     - nest: HashMap<Suit, Boolean>
-
-    + selectCardLead(): Card
-    + selectCardFollow(winningCard: Card, trump: Suit): Card
-    + update(): void
 }
+
 NPC *--> ISelectCardStrategy
-
-class LegalNPC extends NPC {
-    + selectCardLead(): Card
-    + selectCardFollow(winningCard: Card, trump: Suit): Card
-}
-
-
-class SmartNPC extends NPC {
-     + selectCardLead(): Card
-     + selectCardFollow(winningCard: Card, trump: Suit): Card
-}
+NPC -->"1" ITrickModel
 
 interface ISelectCardStrategy {
     + selectCardLead(NPC: npc): Card
     + selectCardFollow(NPC: npc, winningCard: Card, trump: Suit): Card
 }
 
-class LegalSelectCardHandle implements ISelectCardStrategy{
-    + selectCardLead(NPC: npc): Card
-    + selectCardFollow(NPC: npc, winningCard: Card, trump: Suit): Card
+class SmartStrategy implements ISelectCardStrategy{
+'    + selectCardLead(NPC: npc): Card
+'    + selectCardFollow(NPC: npc, winningCard: Card, trump: Suit): Card
 }
 
-class SmartSelectCardHandle implements ISelectCardStrategy{
-    + selectCardLead(NPC: npc): Card
-    + selectCardFollow(NPC: npc, winningCard: Card, trump: Suit): Card
+class LegalStrategy implements ISelectCardStrategy{
+'    + selectCardLead(NPC: npc): Card
+'    + selectCardFollow(NPC: npc, winningCard: Card, trump: Suit): Card
 }
 
 interface IObserver {
@@ -50,10 +36,12 @@ interface IObservable {
     + notifyObservers(): void
 }
 
-interface ITrickModel extends IObservable {
-    + initialise(): void
-    + transfer(selected: Card, playerNum: int): void
-    + clear(): void
+interface ITrickModel {
+    getCards(): Hand
+    transfer(selected: Card, playerNum: int): void
+    clear(): void
+    getRecentCard(): Card
+    getRecentCardPlayerNum(): int
 }
 
 class TrickModel implements IObservable, ITrickModel{
@@ -61,15 +49,8 @@ class TrickModel implements IObservable, ITrickModel{
     - recentCard: Card
     - recentCardPlayerNum: int
     - changed: boolean
-    - observers: List<IObserver>
-
-    + register(obj: IObserver): void
-    + unregister(obj: IObserver): void
-    + notifyObservers(): void
-    + initialise(): void
-    + transfer(selected: Card, playerNum: int): void
-    + clear(): void
 }
+IObservable --> "*" IObserver
 
 class TrickView implements IObserver {
     + update(): void
@@ -100,14 +81,9 @@ class WhistModel implements IWhistModel{
     - nbPlayers: int
     - nbStartCards: int
     - hands: Hand[]
-
-    + addNPC(npc: NPC): boolean
-    + resetNPC(): void
-    + dealingOut(): void
 }
 
-WhistModel --> "*" NPC
-WhistModel --> Dealer
+WhistModel --> "*" IPlayer
 
 class WhistVIew {
     + selectCard(): void
@@ -134,10 +110,11 @@ class WhistController{
 
 WhistController --> IWhistModel
 WhistController --> WhistVIew
+WhistVIew --> WhistController
 WhistController --> TrickController
 WhistController --> ScoreBoardController
 
-interface IScoreBoardModel extends IObservable {
+interface IScoreBoardModel {
     + initialise(): void
     + put(player: int, score: int): void
     + get(player: int): void
@@ -158,8 +135,6 @@ class ScoreBoardModel implements IScoreBoardModel, IObservable{
 
 }
 
-ScoreBoardModel --> "*" IObserver
-
 class ScoreBoardView implements IObserver{
     - scoreActors: Map<Integer, Actor>
 
@@ -171,32 +146,46 @@ ScoreBoardView --> IScoreBoardModel
 ScoreBoardView --> ScoreBoardController
 
 class ScoreBoardController {
-    + put(player: int, score int): void
-    + inc(player: int): void
-    + get(player: int): void
+    score(player: int): void
+    get(player: int): int
 }
 
 ScoreBoardController --> IScoreBoardModel
 ScoreBoardController --> ScoreBoardView
 
 class CardUtil{
-}
-
-class Dealer{
-    + deal(): Hand[]
+    + {static} randomCard(hand: Hand): Card
+    + {static} randomCard(list: List<Card>): Card
+    + {static} rankGreater(card1: Card, card2: Card): boolean
 }
 
 class DeckFactory {
     - uniqueInstance: DeckFactory
-
     + getInstance(): DeckFactory
     + createStandardDeck(): Deck
 }
 
+class NFCFactory {
+    - uniqueInstance: NFCFactory
+    + getInstance(): NFCFactory
+    + createLegalNPC(playerNumber: int, trickController: TrickController): NPC
+    + createSmartNPC(playerNumber: int, trickController: TrickController): NPC
+}
+
 class FontSingleton{
     - uniqueInstance: FontSingleton
-
     + getInstance(): FontSingleton
 }
 
+interface IPlayer {
+    selectCardLead(): Card
+    selectCardFollow(winningCard: Card, trump: CardUtil.Suit): Card
+    setHand(hand: Hand): void
+    thinking(): void
+    reset(): void
+}
+
+class InteractivePlayer implements IPlayer {
+    + void setListener(): void
+}
 @enduml

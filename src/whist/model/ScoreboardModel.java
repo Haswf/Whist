@@ -1,7 +1,6 @@
 package whist.model;
 
 import whist.Whist;
-import whist.interfaces.IObservable;
 import whist.interfaces.IObserver;
 import whist.interfaces.IScoreboardModel;
 
@@ -10,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ScoreboardModel implements IScoreboardModel, IObservable {
+public class ScoreboardModel implements IScoreboardModel {
     private final Map<Integer, Integer> scores;
     private boolean changed;
     private final List<IObserver> observers;

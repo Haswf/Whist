@@ -10,7 +10,6 @@ public class TrickController {
 
     public TrickController(ITrickModel trickModel) {
         this.model = trickModel;
-        model.initialise();
         this.view = new TrickView(this, model);
     }
 

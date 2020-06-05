@@ -3,15 +3,14 @@ package whist.model;
 import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
 import whist.DeckFactory;
-import whist.interfaces.IObservable;
 import whist.interfaces.IObserver;
 import whist.interfaces.ITrickModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrickModel implements IObservable, ITrickModel {
-    private Hand cards;
+public class TrickModel implements ITrickModel {
+    private final Hand cards;
     private Card recentCard;
     private int recentCardPlayerNum;
     private boolean changed;
@@ -24,10 +23,6 @@ public class TrickModel implements IObservable, ITrickModel {
 
     public void clear() {
         this.cards.removeAll(true);
-    }
-
-    public void initialise() {
-
     }
 
     public Hand getCards(){
