@@ -71,15 +71,30 @@ public class SmartStrategy implements ISelectCardStrategy {
                 System.out.println(selected);
                 return selected;
             }
-            // play lowest trump
             else {
                 System.out.println("Trumping!");
+                // if someone has already trumped in, TRY to beat that trump
                 if (winningCard.getSuit().equals(trump)) {
-                    // beat the trump
+
                     int selectedToBeIndex = trumpHand.getMaxPosition(Hand.SortType.RANKPRIORITY);
-                    Card selectedToBe = trumpHand.getCard(selectedToBeIndex);
+                    Card selectedToBe = trumpHand.get(selectedToBeIndex);
+                    // if can beat the card => beat the card
+                    if (selectedToBe.compareTo(winningCard) < 1) {
+                        System.out.print("Playing best card of valid suit to win\n");
+                        selected = hand.getCard(selectedToBe.getCardNumber());
+                    }
+                    // if can't beat the card => use a low card
+                    else {  
+                        System.out.print("Can't win play lowest card of suit\n");
+                        selectedToBe = trumpHand.sort(Hand.SortType.RANKPRIORITY, true);
+                        selected = hand.getCard(selectedToBe.getCardNumber());
+                    }
+                    System.out.println("Trying to win with");
+                    System.out.println(selectedToBe);
                     selected = hand.getCard(selectedToBe.getCardNumber());
-                } else {
+                }
+                // play lowest trump
+                else {
                     Card selectedToBe = trumpHand.sort(Hand.SortType.RANKPRIORITY, true);
                     System.out.println(selectedToBe);
                     selected = hand.getCard(selectedToBe.getCardNumber());
