@@ -111,8 +111,7 @@ public class WhistController {
 
             // reset trick hand
             trickController.clear();
-            scoreboardController.inc(winner);
-            view.showWinner(winner);
+            scoreboardController.score(winner);
             if (Whist.getInstance().getWinningScore() == scoreboardController.get(currentPlayer)) {
                 return Optional.of(currentPlayer);
             }

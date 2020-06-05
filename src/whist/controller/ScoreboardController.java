@@ -14,12 +14,11 @@ public class ScoreboardController {
         model.initialise();
     }
 
-    public void put(int player, int score) {
-        model.put(player, score);
+    public void score(int player) {
+        view.showWinner(player);
+        model.score(player);
     }
-    public void inc(int player) {
-        model.put(player, model.get(player) + 1);
-    }
+
     public int get(int player) {
         return model.get(player);
     }

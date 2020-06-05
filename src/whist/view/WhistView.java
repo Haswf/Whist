@@ -44,7 +44,7 @@ public class WhistView {
         return layouts;
     }
 
-    public void initialise() {
+    public void bindHandToLayout() {
         for (int i = 0; i < Whist.getInstance().getNbPlayers(); i++) {
             Hand hand = model.getHands()[i];
             model.getPlayers().get(i).setHand(hand);
@@ -66,7 +66,7 @@ public class WhistView {
     public void createView() {
         Whist.getInstance().setStatusText("Initializing...");
         createLayout();
-        initialise();
+        bindHandToLayout();
     }
 
     public void onGameOver(int winner) {
@@ -82,9 +82,5 @@ public class WhistView {
 
     public void clearTrump() {
         Whist.getInstance().removeActor(trumpsActor);
-    }
-
-    public void showWinner(int winner) {
-        Whist.getInstance().setStatusText("Player " + winner + " wins trick.");
     }
 }

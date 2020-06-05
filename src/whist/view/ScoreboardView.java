@@ -25,7 +25,6 @@ public class ScoreboardView implements IObserver { /*
     };
     private final Map<Integer, Actor> scoreActors;
 
-
     public ScoreboardView(ScoreboardController controller, IScoreboardModel model) {
         this.scoreActors = new HashMap<>();
         this.model = model;
@@ -52,6 +51,10 @@ public class ScoreboardView implements IObserver { /*
             scoreActors.put(player, new TextActor(String.valueOf(score), Color.WHITE, Whist.getInstance().bgColor, FontSingleton.getInstance().getBigFont()));
             Whist.getInstance().addActor(scoreActors.get(player), scoreLocations[player]);
         }
+    }
+
+    public void showWinner(int winner) {
+        Whist.getInstance().setStatusText("Player " + winner + " wins trick.");
     }
 
 }
