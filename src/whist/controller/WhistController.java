@@ -11,10 +11,8 @@ import whist.model.TrickModel;
 import whist.view.WhistView;
 
 import java.util.Optional;
-import java.util.Random;
 
 public class WhistController {
-    static final Random random = new Random(Whist.getInstance().getSeed());
     private final IWhistModel model;
     private final WhistView view;
     private final ScoreboardController scoreboardController;
