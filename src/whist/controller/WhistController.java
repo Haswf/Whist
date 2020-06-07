@@ -47,6 +47,9 @@ public class WhistController {
             model.addPlayer(npcFactory.createLegalNPC(playerNumber, trickController));
             playerNumber++;
         }
+        for (; playerNumber < Whist.getInstance().getNbPlayers(); playerNumber++) {
+            model.addPlayer(npcFactory.createRandomNPC(playerNumber, trickController));
+        }
     }
 
     public void gameOver(int winner) {
