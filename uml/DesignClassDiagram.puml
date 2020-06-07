@@ -230,10 +230,12 @@ class DeckFactory {
 }
 
 class NPCFactory {
+    - final random: Random
     - uniqueInstance: NPCFactory
     + getInstance(): NPCFactory
     + createLegalNPC(playerNumber: int, trickController: TrickController): NPC
     + createSmartNPC(playerNumber: int, trickController: TrickController): NPC
+    + createRandomNPC(playerNumber: int, trickController: TrickController): NPC
 }
 
 class FontSingleton{
