@@ -1,4 +1,7 @@
 @startuml
+skinparam classAttributeIconSize 0
+skinparam linetype polyline
+skinparam linetype ortho
 
 class NPC implements IObserver, IPlayer {
     - playerNumber: int
@@ -8,8 +11,8 @@ class NPC implements IObserver, IPlayer {
     - nest: HashMap<Suit, Boolean>
 }
 
-NPC *--> ISelectCardStrategy
-NPC -->"1" ITrickModel
+NPC "1" *--> "1" ISelectCardStrategy
+NPC "1" --> "1" ITrickModel
 
 interface ISelectCardStrategy {
     + selectCardLead(NPC: npc): Card
@@ -58,7 +61,7 @@ class TrickView implements IObserver {
     + increaseWidth(): void
 }
 
-TrickView --> TrickController
+TrickView o-- TrickController
 TrickView --> ITrickModel
 
 class TrickController {
@@ -122,10 +125,10 @@ class WhistController{
 }
 
 WhistController --> IWhistModel
-WhistController --> WhistVIew
+WhistController o--	 WhistVIew
 WhistVIew --> WhistController
-WhistController --> TrickController
-WhistController --> ScoreBoardController
+WhistController "1" o-- "1" TrickController
+WhistController "1" o-- "1" ScoreBoardController
 
 interface IScoreBoardModel {
     + initialise(): void
@@ -145,7 +148,6 @@ class ScoreBoardModel implements IScoreBoardModel, IObservable{
     + register(obj: IObserver): void
     + unregister(obj: IObserver): void
     + notifyObservers(): void
-
 }
 
 class ScoreBoardView implements IObserver{
@@ -156,7 +158,7 @@ class ScoreBoardView implements IObserver{
 }
 
 ScoreBoardView --> IScoreBoardModel
-ScoreBoardView --> ScoreBoardController
+ScoreBoardView o--	 ScoreBoardController
 
 class ScoreBoardController {
     score(player: int): void

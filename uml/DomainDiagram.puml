@@ -1,6 +1,6 @@
 @startuml
 
-skinparam linetype polyline
+'skinparam linetype polyline
 
 class Player {
     playerNumber
