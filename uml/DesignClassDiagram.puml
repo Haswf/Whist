@@ -73,6 +73,10 @@ interface IWhistModel{
     + addNPC(npc: NPC): boolean
     + resetNPC(): void
     + dealingOut(): void
+    + nextPlayer (): void
+    + randomPlayerStartsRound(): void
+    + initRound(): void
+    + beatCurrentWinner(): void
 }
 
 class WhistModel implements IWhistModel{
@@ -81,6 +85,15 @@ class WhistModel implements IWhistModel{
     - nbPlayers: int
     - nbStartCards: int
     - hands: Hand[]
+
+    + addNPC(npc: NPC): boolean
+    + resetNPC(): void
+    + deal(): Hand[]
+    + dealingOut(): void
+    + nextPlayer (): void
+    + randomPlayerStartsRound(): void
+    + initRound(): void
+    + beatCurrentWinner(): void
 }
 
 WhistModel --> "*" IPlayer
