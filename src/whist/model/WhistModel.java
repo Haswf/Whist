@@ -17,7 +17,7 @@ public class WhistModel implements IWhistModel {
     private final Deck deck = DeckFactory.getInstance().createStandardDeck();
     private final int nbPlayers = Whist.getInstance().getNbPlayers();
 
-    CardUtil.Suit trumps;
+    private CardUtil.Suit trumps;
 
     private final int nbStartCards = Whist.getInstance().getNbStartCards();
     private final Random random;
@@ -25,7 +25,7 @@ public class WhistModel implements IWhistModel {
     private Card selected = null;
     private int currentPlayerId;
     private IPlayer currentPlayer;
-    public Hand[] hands;
+    private Hand[] hands;
     private final List<IPlayer> players;
     private int winnerId;
 

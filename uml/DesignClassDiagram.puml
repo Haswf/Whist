@@ -19,6 +19,9 @@ header
 endheader
 class NPC implements IObserver, IPlayer {
     - playerNumber: int
+    - strategy: ISelectCardStrategy
+    - selected: Card
+    - topic: IObservable
     - hand: Hand
     - info: Hand
     - playerSuits: HashMap<Integer, HashMap<Suit, Boolean>>
@@ -29,8 +32,8 @@ NPC "1" *--> "1" ISelectCardStrategy
 NPC "1" --> "1" ITrickModel
 
 interface ISelectCardStrategy {
-    + selectCardLead(NPC: npc): Card
-    + selectCardFollow(NPC: npc, winningCard: Card, trump: Suit): Card
+    + selectCardLead(npc: NPC): Card
+    + selectCardFollow(npc: NPC, winningCard: Card, trump: Suit): Card
 }
 
 class SmartStrategy implements ISelectCardStrategy{
@@ -49,6 +52,7 @@ interface IObservable {
     + register(obj: IObserver): void
     + unregister(obj: IObserver): void
     + notifyObservers(): void
+    + getUpdate(observer: IObserver): Object
 }
 
 interface ITrickModel {
@@ -64,16 +68,28 @@ class TrickModel implements IObservable, ITrickModel{
     - recentCard: Card
     - recentCardPlayerNum: int
     - changed: boolean
+    - observers: List<IObserver>
+
+    + clear(): void
+    + getCards(): Hand
+    + transfer(selected: Card, playerNum: int): void
+    + register(obj: IObserver): void
+    + unregister(obj: IObserver): void
+    + getUpdate(obj: IObserver): Object
 }
 IObservable --> "*" IObserver
 
 class TrickView implements IObserver {
+    - model: ITrickModel
+    - controller: TrickController
+
     + update(): void
     + clear(): void
-    + increaseWidth(): void
+    + transfer(selected: Card): void
+    - increaseWidth(): void
 }
 
-TrickView o-- TrickController
+TrickView --> TrickController
 TrickView --> ITrickModel
 
 class TrickController {
@@ -81,17 +97,22 @@ class TrickController {
    + transfer(selected: Card, playerNum: int): void
 }
 
-TrickController --> ITrickModel
-TrickController --> TrickView
+TrickController "1" *--> "1" ITrickModel
+TrickController o-- TrickView
 
 interface IWhistModel{
     addPlayer(player: IPlayer): boolean
+    getNbPlayers(): int
+    getNbStartCards(): int
     getHands(): Hand[]
     dealingOut(): void
+    getPlayers(): List<IPlayer>
     nextPlayer(): void
+    getCurrentPlayer(): IPlayer
     randomPlayerStartsRound(): void
     initRound(): void
     beatCurrentWinner(): void
+    getWinnerId(): int
 }
 
 class WhistModel implements IWhistModel{
@@ -100,10 +121,17 @@ class WhistModel implements IWhistModel{
     - nbPlayers: int
     - nbStartCards: int
     - hands: Hand[]
+    - random: Random
+    - winningCard: Card
+    - selected: Card
+    - currentPlayerId: int
+    - currentPlayer: IPlayer
+    - players: List<IPlayer>
+    - trumps: CardUtil.Suit
+    - winnerId: int
 
-    + addNPC(npc: NPC): boolean
-    + resetNPC(): void
-    + deal(): Hand[]
+    + addPlayer(player: IPlayer): boolean
+    + deal(deck: Deck, nbPlayers: int, nbStartCards: int): Hand[]
     + dealingOut(): void
     + nextPlayer (): void
     + randomPlayerStartsRound(): void
@@ -114,12 +142,15 @@ class WhistModel implements IWhistModel{
 WhistModel --> "*" IPlayer
 
 class WhistView {
-    + selectCard(): void
-    + initialise(): void
+    - model: IWhistModel
+    - controller: WhistController
+    - layouts: Map<Integer, RowLayout>
+
+    + bindHandToLayout(): void
     + createLayout(): void
     + createView(): void
     + onGameOver(winner: int): void
-    + showTrump(trumps: Suit): void
+    + showTrump(trumps: CardUtil.Suit): void
     + clearTrump(): void
 }
 
@@ -136,7 +167,7 @@ class WhistController{
 
 }
 
-WhistController --> IWhistModel
+WhistController "1" *--> "1" IWhistModel
 WhistController o--	 WhistView
 WhistView --> WhistController
 WhistController "1" o-- "1" TrickController
@@ -144,41 +175,47 @@ WhistController "1" o-- "1" ScoreBoardController
 
 interface IScoreBoardModel {
     + initialise(): void
-    + put(player: int, score: int): void
-    + get(player: int): void
+    + get(player: int): int
     + getScores(): Map<Integer, Integer>
+    + score(player: int): void
 }
 
 class ScoreBoardModel implements IScoreBoardModel, IObservable{
     - scores: Map<Integer, Integer>
     - changed: boolean
+    - observers: List<IObserver>
 
     + initialise(): void
-    + put(player: int, score: int): void
-    + get(player: int): void
-    + getScores(): Map<Integer, Integer>
+    - put(player: int, score: int): void
+    + score(player: int): void
+    + get(player: int): int
     + register(obj: IObserver): void
     + unregister(obj: IObserver): void
     + notifyObservers(): void
+    + getUpdate(obj: IObserver): Object
 }
 
 class ScoreBoardView implements IObserver{
     - scoreActors: Map<Integer, Actor>
+    - model: IScoreBoardModel
+    - controller: ScoreBoardController
+    - scoreLocations: Location[]
 
     + createView(): void
     + update(): void
+    + showWinner(winner: int): void
 }
 
 ScoreBoardView --> IScoreBoardModel
-ScoreBoardView o--	 ScoreBoardController
+ScoreBoardView -->	 ScoreBoardController
 
 class ScoreBoardController {
     score(player: int): void
     get(player: int): int
 }
 
-ScoreBoardController --> IScoreBoardModel
-ScoreBoardController --> ScoreBoardView
+ScoreBoardController "1" *--> "1" IScoreBoardModel
+ScoreBoardController o-- ScoreBoardView
 
 class CardUtil{
     + {static} randomCard(hand: Hand): Card
@@ -213,6 +250,9 @@ interface IPlayer {
 }
 
 class InteractivePlayer implements IPlayer {
+    - hand: Hand
+    - selected: Card
+
     + void setListener(): void
 }
 @enduml
