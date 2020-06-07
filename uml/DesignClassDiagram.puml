@@ -2,7 +2,21 @@
 skinparam classAttributeIconSize 0
 skinparam linetype polyline
 skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam nodesep 50
+skinparam ranksep 50
+'skinparam linetype polyline
+    'skinparam linetype ortho
+    skinparam titleBorderRoundCorner 15
+    skinparam titleBorderThickness 2
+    skinparam titleBorderColor black
+    skinparam titleBackgroundColor White
+    title <font size = 20>Whist: Static Design Model </font>
 
+header
+<font color=red><font size=15>Project Team 30</font>
+<font size = 12>Albert Tu (890424), Shuyang Fan (988301), Daniel Coleman (994887)</font>
+endheader
 class NPC implements IObserver, IPlayer {
     - playerNumber: int
     - hand: Hand
@@ -23,12 +37,10 @@ class SmartStrategy implements ISelectCardStrategy{
 '    + selectCardLead(NPC: npc): Card
 '    + selectCardFollow(NPC: npc, winningCard: Card, trump: Suit): Card
 }
-
 class LegalStrategy implements ISelectCardStrategy{
 '    + selectCardLead(NPC: npc): Card
 '    + selectCardFollow(NPC: npc, winningCard: Card, trump: Suit): Card
 }
-
 interface IObserver {
     + update(): void
 }
@@ -73,13 +85,13 @@ TrickController --> ITrickModel
 TrickController --> TrickView
 
 interface IWhistModel{
-    + addNPC(npc: NPC): boolean
-    + resetNPC(): void
-    + dealingOut(): void
-    + nextPlayer (): void
-    + randomPlayerStartsRound(): void
-    + initRound(): void
-    + beatCurrentWinner(): void
+    addPlayer(player: IPlayer): boolean
+    getHands(): Hand[]
+    dealingOut(): void
+    nextPlayer(): void
+    randomPlayerStartsRound(): void
+    initRound(): void
+    beatCurrentWinner(): void
 }
 
 class WhistModel implements IWhistModel{
@@ -101,17 +113,17 @@ class WhistModel implements IWhistModel{
 
 WhistModel --> "*" IPlayer
 
-class WhistVIew {
+class WhistView {
     + selectCard(): void
     + initialise(): void
     + createLayout(): void
     + createView(): void
-    + onGameOVer(winner: int): void
+    + onGameOver(winner: int): void
     + showTrump(trumps: Suit): void
     + clearTrump(): void
 }
 
-WhistVIew --> IWhistModel
+WhistView --> IWhistModel
 
 class WhistController{
     + initialise(): void
@@ -125,8 +137,8 @@ class WhistController{
 }
 
 WhistController --> IWhistModel
-WhistController o--	 WhistVIew
-WhistVIew --> WhistController
+WhistController o--	 WhistView
+WhistView --> WhistController
 WhistController "1" o-- "1" TrickController
 WhistController "1" o-- "1" ScoreBoardController
 
@@ -180,9 +192,9 @@ class DeckFactory {
     + createStandardDeck(): Deck
 }
 
-class NFCFactory {
-    - uniqueInstance: NFCFactory
-    + getInstance(): NFCFactory
+class NPCFactory {
+    - uniqueInstance: NPCFactory
+    + getInstance(): NPCFactory
     + createLegalNPC(playerNumber: int, trickController: TrickController): NPC
     + createSmartNPC(playerNumber: int, trickController: TrickController): NPC
 }
