@@ -126,14 +126,14 @@ class WhistView {
 WhistView --> IWhistModel
 
 class WhistController{
-    + initialise(): void
-    + resetNPC(): void
-    + createNPC(): void
+    + dealingOut(): void
+    + createPlayer(): void
     + gameOver(winner: int): void
-    + playerSelectCard(): Card
-    + NPCSelectCardLead(player: int): Card
-    + NPCSelectCardFollow(player: int, winningCard: Card, trump: Suit): Card
     + playRound(): Optional<Integer>
+    + endTrick(): void
+    + leadTurn(): void
+    + followTurn(): void
+
 }
 
 WhistController --> IWhistModel
