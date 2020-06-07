@@ -1,5 +1,7 @@
 @startuml
 
+skinparam linetype polyline
+
 class Player {
     playerNumber
     hand
