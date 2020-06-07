@@ -1,0 +1,26 @@
+@startuml
+
+class Player {
+    playerNumber
+    hand
+}
+
+class NPC {
+    playerNumber
+    hand
+}
+
+class Card {
+    rank
+    suit
+}
+
+class Whist {
+
+}
+
+Whist "1" -- "*" Player: plays <
+Whist "1" -- "*" NPC: plays <
+NPC "1" -- "13" Card: holds in hand >
+Player "1" -- "13" Card: holds in hand >
+@enduml
